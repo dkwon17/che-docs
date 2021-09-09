@@ -1,0 +1,33 @@
+// Module included in the following assemblies:
+//
+// hosted-che
+
+[id="try_in_web_ide_github_action_{context}"]
+= Using the Try in Web IDE GitHub action
+
+The link:https://github.com/marketplace/actions/try-in-web-ide[Try in Web IDE GitHub action] can be added to a GitHub repository workflow to allow reviewers to quickly and test pull requests on Eclipse Che hosted by Red Hat.
+The action achieves this by listening to pull request events and automatically creating a comment and/or status check providing a link:https://www.eclipse.org/che/docs/che-7/end-user-guide/creating-a-workspace-from-remote-devfile/#creating-a-workspace-from-the-default-branch-of-a-git-repository_che[factory URL].
+This factory URL creates a new workspace (link:https://www.eclipse.org/che/docs/che-7/end-user-guide/creating-a-workspace-from-remote-devfile/#creating-a-workspace-from-a-feature-branch-of-a-git-repository_che[from the pull request branch]) on Eclipse Che hosted by Red Hat.
+
+.Pull request comment created by the Try in Web IDE GitHub action. Clicking on the badge will open a new workspace for reviewers to test the pull request.
+image::hosted-che/github-action-comment.png[test]
+
+.Pull request status check created by the Try in Web IDE GitHub action. Clicking on the "Details" link will open a new workspace for reviewers to test the pull request.
+image::hosted-che/github-action-status-check.png[test]
+
+This section describes how to integrate the Try in Web IDE GitHub action to a GitHub repository workflow.
+
+.Prerequisites
+
+* A GitHub repository
+* A devfile in the root of the GitHub repository (recommended)
+
+.Procedure
+
+. Create a `demo.yml` file in the `.github/workflows` directory in the GitHub repository with the following content:
++
+include::example$snip_github-action-yaml-example.adoc[]
+
+. Optionally configure the `add_comment` and `add_status` GitHub action inputs within `demo.yml`.
+
+NOTE: Providing a link:https://www.eclipse.org/che/docs/che-7/end-user-guide/authoring-devfiles-version-1/#what-is-a-devfile_che[devfile] in the root of the GitHub repository is highly recommended to define the development environment for the workspace created by the factory URL.

@@ -19,6 +19,8 @@ include::partial$proc_creating-a-workspace-from-template-in-hosted-che.adoc[leve
 
 include::partial$proc_contributing-to-github-projects-in-hosted-che.adoc[leveloffset=+1]
 
+include::partial$proc_try-in-web-ide-github-action.adoc[leveloffset=+1]
+
 include::partial$ref_hosted-che-faq-and-troubleshooting.adoc[leveloffset=+1]
 
 .Additional resources

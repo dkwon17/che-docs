@@ -1,0 +1,31 @@
+.demo.yml
+====
+[source,yaml,subs="+quotes,+attributes,+macros"]
+----
+# Add Web IDE link on PRs
+name: web-ide
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+
+jobs:
+  add-link:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Web IDE Pull Request Check
+        id: try-in-web-ide
+        uses: redhat-actions/try-in-web-ide@v1
+        with:
+          # GitHub action inputs
+
+          # required
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+          # optional - defaults to true
+          add_comment: true
+
+          # optional - defaults to true
+          add_status: true
+----
+====
