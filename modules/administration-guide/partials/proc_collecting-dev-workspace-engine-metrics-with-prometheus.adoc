@@ -1,0 +1,62 @@
+[id="proc_collecting-dev-workspace-engine-metrics-with-prometheus_{context}"]
+= Collecting {devworkspace} engine metrics with Prometheus
+
+[role="_abstract"]
+This section describes how to use the Prometheus to collect, store, and query metrics about the {devworkspace} engine.
+
+.Prerequisites
+
+* The `devworkspace-controller-metrics` service is exposing metrics on port `8443`.
+
+* The `devworkspace-webhookserver` service is exposing metrics on port `9443`.
+
+* Prometheus 2.26.0 or later is running and the Prometheus console is running on port `9090` with a corresponding *service* and *route*. See link:https://prometheus.io/docs/introduction/first_steps/[First steps with Prometheus].
+
+.Procedure
+
+. Create a `ClusterRoleBinding` to bind the `ServiceAccount` associated with Prometheus to the link:https://github.com/devfile/devworkspace-operator/blob/main/deploy/deployment/kubernetes/objects/devworkspace-controller-metrics-reader.ClusterRole.yaml[devworkspace-controller-metrics-reader] `ClusterRole`.
+This step is required to access {devworkspace} metrics because access is protected with role-based access control (RBAC).
++
+.ClusterRole example
+====
+include::example$metrics-reader-cluster-role.adoc[]
+====
+
++
+.ClusterRoleBinding example
+====
+include::example$metrics-reader-cluster-role-binding.adoc[]
+====
+
+. Configure Prometheus to scrape metrics from the `8443` port exposed by the `devworkspace-controller-metrics` service and `9443` port exposed by the `devworkspace-webhookserver` service.
++
+.Prometheus configuration example
+====
+include::example$prometheus-dev-workspace-engine-config.adoc[]
+====
+
+<1> Rate at which a target is scraped.
+<2> Rate at which recording and alerting rules are re-checked.
+<3> Resources that Prometheus monitors. In the default configuration, two jobs (`DevWorkspace` and `DevWorkspace webhooks`), scrape the time series data exposed by the `devworkspace-controller-metrics` and `devworkspace-webhookserver` services.
+<4> Scrape metrics from the `8443` port.
+<5> Scrape metrics from the `9443` port.
+
+.Verification steps
+
+* Use the Prometheus console to view targets and metrics.
++
+For more information, see link:https://prometheus.io/docs/introduction/first_steps/#using-the-expression-browser[Using the expression browser] in the Prometheus documentation.
+
+
+[role="_additional-resources"]
+.Additional resources
+
+* link:https://prometheus.io/docs/introduction/first_steps/[First steps with Prometheus].
+
+* link:https://prometheus.io/docs/prometheus/latest/configuration/configuration/[Configuring Prometheus].
+
+* link:https://prometheus.io/docs/prometheus/latest/querying/basics/[Querying Prometheus].
+
+* link:https://prometheus.io/docs/concepts/metric_types/[Prometheus metric types].
+
+
