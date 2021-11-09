@@ -1,0 +1,16 @@
+[source,yaml,subs="+attributes"]
+----
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: devworkspace-controller-metrics-binding
+subjects:
+  - kind: ServiceAccount
+    name: <ServiceAccount name associated with the Prometheus Pod>
+    namespace: <Prometheus namespace>
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: devworkspace-controller-metrics-reader
+----
+

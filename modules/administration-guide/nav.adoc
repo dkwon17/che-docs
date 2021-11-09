@@ -21,6 +21,8 @@
 
 * xref:monitoring-che.adoc[]
 
+* xref:monitoring-the-dev-workspace-engine.adoc[]
+
 * xref:tracing-che.adoc[]
 
 * xref:backup-and-disaster-recovery.adoc[]

@@ -1,0 +1,30 @@
+[source,yaml,subs="+attributes"]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+data:
+  prometheus.yml: |-
+      global:
+        scrape_interval:     5s             <1>
+        evaluation_interval: 5s             <2>
+      scrape_configs:                       <3>
+        - job_name: 'DevWorkspace'
+          authorization:
+            type: Bearer
+            credentials_file: '/var/run/secrets/kubernetes.io/serviceaccount/token'
+          tls_config:
+            insecure_skip_verify: true
+          static_configs:
+            - targets: ['devworkspace-controller-metrics:8443']  <4>
+        - job_name: 'DevWorkspace webhooks'
+          authorization:
+            type: Bearer
+            credentials_file: '/var/run/secrets/kubernetes.io/serviceaccount/token'
+          tls_config:
+            insecure_skip_verify: true
+          static_configs:
+            - targets: ['devworkspace-webhookserver:9443']  <5>
+----
+

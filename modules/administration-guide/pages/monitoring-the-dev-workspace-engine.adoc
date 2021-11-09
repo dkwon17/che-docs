@@ -1,0 +1,7 @@
+[id="monitoring-the-dev-workspace-engine"]
+// = Monitoring the Dev Workspace engine
+:navtitle: Monitoring the Dev Workspace engine
+:keywords: administration-guide, monitoring-the-dev-workspace-engine
+:page-aliases: .:monitoring-the-dev-workspace-engine
+
+include::partial$assembly_monitoring-the-dev-workspace-engine.adoc[]
