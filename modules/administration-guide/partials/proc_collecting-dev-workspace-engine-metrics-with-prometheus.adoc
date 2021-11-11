@@ -6,9 +6,9 @@ This section describes how to use the Prometheus to collect, store, and query me
 
 .Prerequisites
 
-* The `devworkspace-controller-metrics` service is exposing metrics on port `8443`.
+* The link:https://github.com/devfile/devworkspace-operator/blob/v0.10.0/deploy/deployment/kubernetes/objects/devworkspace-controller-metrics.Service.yaml[`devworkspace-controller-metrics` service] is exposing metrics on port `8443`.
 
-* The `devworkspace-webhookserver` service is exposing metrics on port `9443`.
+* The `devworkspace-webhookserver` service is exposing metrics on port `9443`. This is the default configuration.
 
 * Prometheus 2.26.0 or later is running and the Prometheus console is running on port `9090` with a corresponding *service* and *route*. See link:https://prometheus.io/docs/introduction/first_steps/[First steps with Prometheus].
 
