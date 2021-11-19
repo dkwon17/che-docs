@@ -5,25 +5,20 @@
 This section describes the DevWorkspace-specific metrics exposed by the `devworkspace-controller-metrics` service.
 
 .Metrics
-* *Name:* `devworkspace_started_total` (counter) +
-  *Description:* Number of DevWorkspace starting events +
-  *Labels:* `source`, `routingclass`
-* *Name:* `devworkspace_started_success_total` (counter) +
-  *Description:* Number of DevWorkspaces successfully entering the `Running` phase +
-  *Labels:* `source`, `routingclass`
-* *Name:* `devworkspace_fail_total` (counter) +
-  *Description:* Number of failed DevWorkspaces +
-  *Labels:* `source`, `reason`
-* *Name:* `devworkspace_startup_time` (histogram) +
-  *Description:* Total time taken to start a DevWorkspace, in seconds +
-  *Labels:* `source`, `routingclass`
+,=== 
+ Name, Type, Description, Labels 
+ 
+ `devworkspace_started_total`,"Counter","Number of DevWorkspace starting events.", "`source`, `routingclass`" 
+ `devworkspace_started_success_total`,"Counter","Number of DevWorkspaces successfully entering the `Running` phase.", "`source`, `routingclass`" 
+ `devworkspace_fail_total`,"Counter","Number of failed DevWorkspaces.", "`source`, `reason`" 
+ `devworkspace_startup_time`,"Histogram","Total time taken to start a DevWorkspace, in seconds.", "`source`, `routingclass`" 
+,=== 
 
 .Labels
-* *Name:* `source` +
-  *Description:* The `controller.devfile.io/devworkspace-source` label of the DevWorkspace
-* *Name:* `routingclass` +
-  *Description:* The `spec.routingclass` of the DevWorkspace +
-  *Values:* `"basic|cluster|cluster-tls|web-terminal"`
-* *Name:* `reason` +
-  *Description:* The workspace startup failure reason +
-  *Values:* `"BadRequest|InfrastructureFailure|WorkspaceEngineFailure|Unknown"`
+,=== 
+ Name, Description, Values 
+ 
+ `source`,"The `controller.devfile.io/devworkspace-source` label of the DevWorkspace.",`string` 
+ `routingclass`,"The `spec.routingclass` of the DevWorkspace.",`"basic|cluster|cluster-tls|web-terminal"` 
+ `reason`,"The workspace startup failure reason.",`"BadRequest|InfrastructureFailure|WorkspaceEngineFailure|Unknown"` 
+,=== 
