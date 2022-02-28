@@ -5,8 +5,8 @@ http://maven.apache.org/xsd/settings-1.0.0.xsd">
    <servers>
       <server>
          <id>che-incubator</id>
-         <username>${env.GITHUB_USERNAME}</username>
-         <password>${env.GITHUB_TOKEN}</password>
+         <username>YOUR GITHUB USERNAME</username>
+         <password>YOUR GITHUB TOKEN</password>
       </server>
    </servers>
 

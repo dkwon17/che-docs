@@ -6,7 +6,6 @@ public class AnalyticsManager extends AbstractAnalyticsManager {
 
     ...
 
-    
     @Override
     public void onActivity() {
         if (System.currentTimeMillis() - lastEventTime >= inactiveTimeLimt) {

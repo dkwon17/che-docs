@@ -1,16 +1,16 @@
 package org.my.group;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Produces;
+import java.util.Optional;
 
-import org.eclipse.che.incubator.workspace.telemetry.base.AbstractAnalyticsManager;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Alternative;
+
 import org.eclipse.che.incubator.workspace.telemetry.base.BaseConfiguration;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Dependent
+@Alternative
 public class MainConfiguration extends BaseConfiguration {
-    @Produces
-    public AbstractAnalyticsManager analyticsManager() {
-      return new AnalyticsManager(apiEndpoint, workspaceId, machineToken, requestFactory());
-      
-    }
+    @ConfigProperty(name = "welcome.message")      <1>
+    Optional<String> welcomeMessage;               <2>
 }
