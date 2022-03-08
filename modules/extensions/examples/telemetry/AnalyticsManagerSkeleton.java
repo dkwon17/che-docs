@@ -20,8 +20,18 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Alternative
 public class AnalyticsManager extends AbstractAnalyticsManager {
 
+    private static final Logger LOG = getLogger(AbstractAnalyticsManager.class);
+
     public AnalyticsManager(MainConfiguration mainConfiguration, DevWorkspaceFinder devworkspaceFinder, UsernameFinder usernameFinder) {
         super(mainConfiguration, devworkspaceFinder, usernameFinder);
+
+        /**
+         * Log the welcome message if it was provided
+         */
+        mainConfiguration.welcomeMessage.ifPresentOrElse(
+            (str) -> LOG.info("The welcome message is: {}", str),
+            () -> LOG.info("No welcome message provided")
+        );
     }
 
     @Override

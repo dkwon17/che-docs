@@ -11,7 +11,7 @@ components:
         - name: DEVWORKSPACE_TELEMETRY_BACKEND_PORT
           value: '4167'
     container:
-      image: YOUR IMAGE <1>
+      image: YOUR IMAGE            <1>
       env:
-        - name: WELCOME_MESSAGE
+        - name: WELCOME_MESSAGE    <2>
           value: 'hello world!'

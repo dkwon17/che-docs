@@ -1,9 +1,9 @@
 [id="creating-a-telemetry-plugin_{context}"]
-= Creating A Telemetry Plug-in
+= Creating a back-end telemetry plug-in
 
 This section shows how to create an `AnalyticsManager` class that extends link:https://github.com/che-incubator/che-workspace-telemetry-client/blob/master/backend-base/src/main/java/org/eclipse/che/incubator/workspace/telemetry/base/AbstractAnalyticsManager.java[`AbstractAnalyticsManager`] and implements the following methods:
 
-* `isEnabled()` - determines whether the telemetry back-end is functioning correctly. This could mean always returning `true`, or have more complex checks, for example, returning `false` when a connection property is missing.
+* `isEnabled()` - determines whether the telemetry back-end is functioning correctly. This can mean always returning `true`, or have more complex checks, for example, returning `false` when a connection property is missing.
 * `destroy()` - cleanup method that is run before shutting down the telemetry back-end. This method sends the `WORKSPACE_STOPPED` event.
 * `onActivity()` - notifies that some activity is still happening for a given user. This is mainly used to send `WORKSPACE_INACTIVE` events.
 * `onEvent()` - submits telemetry events to the telemetry server, such as `WORKSPACE_USED` or `WORKSPACE_STARTED`.
@@ -13,12 +13,12 @@ The following sections cover:
 
 * Creation of a telemetry server to echo events to standard output.
 * Extending the {prod-short} telemetry client and implementing a user's custom back-end.
-* Creating a `plugin.yaml` file representing a {prod-short} workspace plug-in for a user's custom back-end.
+* Creating a `plugin.yaml` file representing a {devworkspace} plug-in for the custom back-end.
 * Specifying of a location of a custom plug-in to {prod-short} by setting the `workspacesDefaultPlugins` attribute from the `CheCluster` custom resource.
 
-== Getting Started
+== Getting started
 
-This document describes the steps required to extend the {prod-short} telemetry system to connect to a custom back-end:
+This document describes the steps required to extend the {prod-short} telemetry system to communicate with to a custom back-end:
 
 . Creating a server process that receives events
 . Extending {prod-short} libraries to create a back-end that send events to the server
@@ -34,7 +34,7 @@ For demonstration purposes, this example shows how to create a server that recei
 
 For production use cases, consider integrating with a third-party telemetry system (for example, Segment, Woopra) rather than creating your own telemetry server. In this case, use your provider's APIs to send events from your custom back-end to their system.
 
-The following Go code starts a server on port 8080 and writes events to standard output:
+The following Go code starts a server on port `8080` and writes events to standard output:
 
 .`main.go`
 ====
@@ -44,34 +44,36 @@ include::example$telemetry/main.go[]
 ----
 ====
 
-Create a container image based on this code and expose it as a deployment in OpenShift in the {prod-namespace} {orch-namespace}. The code for the example telemetry server is available at link:https://github.com/che-incubator/che-workspace-telemetry-example[che-workspace-telemetry-example]. To deploy the telemetry server, clone the repository and build the container:
+Create a container image based on this code and expose it as a deployment in OpenShift in the {prod-namespace} {orch-namespace}. The code for the example telemetry server is available at link:https://github.com/che-incubator/telemetry-server-example[telemetry-server-example]. To deploy the telemetry server, clone the repository and build the container:
 
 ----
-$ git clone https://github.com/che-incubator/che-workspace-telemetry-example
-$ cd che-workspace-telemetry-example
-$ docker build -t registry/organization/che-workspace-telemetry-example:latest .
-$ docker push registry/organization/che-workspace-telemetry-example:latest
+$ git clone https://github.com/che-incubator/telemetry-server-example
+$ cd telemetry-server-example
+$ docker build -t registry/organization/telemetry-server-example:latest .
+$ docker push registry/organization/telemetry-server-example:latest
 ----
 
-In `manifest.yaml`, replace the `image` and `host` fields to match the image you pushed, and the public hostname of your {platforms-name} cluster. Then run:
+Both `manifest_with_ingress.yaml` and `manifest_with_route` contain definitions for a Deployment and Service. The former also defines a {kubernetes} Ingress, while the latter defines also an OpenShift Route.
+
+In the manifest file, replace the `image` and `host` fields to match the image you pushed, and the public hostname of your {platforms-name} cluster. Then run:
 
 [subs="+quotes"]
 ----
-$ kubectl apply -f manifest.yaml -n {prod-namespace}
+$ kubectl apply -f manifest_with_[ingress|route].yaml -n {prod-namespace}
 ----
 
-== Creating a new Maven project
+== Creating the back-end project
 
-NOTE: For fast feedback when developing, it is recommended to do development inside a {prod-short} workspace. This way, you can run the application in a cluster and connect to the workspaces front-end telemetry plug-in to send events to your custom back-end.
+NOTE: For fast feedback when developing, it is recommended to do development inside a {prod-short} workspace. This way, you can run the application in a cluster and receive events from the front-end telemetry plug-in.
 
 pass:[<!-- vale RedHat.TermsErrors = NO -->]
 
-. Create a new Maven Quarkus project scaffolding:
+. Maven Quarkus project scaffolding:
 +
 ----
 $ mvn io.quarkus:quarkus-maven-plugin:2.7.1.Final:create \
   -DprojectGroupId=mygroup -DprojectArtifactId=telemetryback-end \
-  -DprojectVersion=my-version -DclassName="org.my.group.MyResource"
+  -DprojectVersion=my-version
 ----
 
 pass:[<!-- vale RedHat.TermsErrors = YES -->]
@@ -99,16 +101,68 @@ include::example$telemetry/settings.xml[]
 ====
 +
 
+
+== Creating a concrete implementation of AnalyticsManager and adding specialized logic
+
+Create two new files in your project under `src/main/java/mygroup`:
+
+* `MainConfiguration.java` - contains configuration provided to `AnalyticsManager`.
+* `AnalyticsManager.java` - contains logic specific to the telemetry system.
+
+.`MainConfiguration.java`
+====
+[source,java]
+----
+include::example$telemetry/MainConfiguration.java[]
+----
+====
+<1> A MicroProfile configuration annotation is used to inject the `welcome.message` configuration.
+
+For more details on how to set configuration properties specific to your back-end, see the Quarkus link:https://quarkus.io/guides/config-reference[Configuration Reference Guide].
+
+.`AnalyticsManager.java`
+====
+[source,java]
+----
+include::example$telemetry/AnalyticsManagerSkeleton.java[]
+----
+====
+<1> Log the welcome message if it was provided
+
+Since `org.my.group.AnalyticsManager` and `org.my.group.MainConfiguration` are alternative beans, specify them using the `quarkus.arc.selected-alternatives` property in `src/main/resources/application.properties`.
+
+----
+quarkus.arc.selected-alternatives=MainConfiguration,AnalyticsManager
+----
+
+
 [id="running-the-application_{context}"]
-== Running the application
+== Running the application within a {devworkspace}
 
-Run and test the application is in a {devworkspace}:
+. Set the `DEVWORKSPACE_TELEMETRY_BACKEND_PORT` environment variable in the {devworkspace}. Here, the value is set to `4167`.
 
++
+----
+spec:
+  template:
+    attributes:
+      workspaceEnv:
+        - name: DEVWORKSPACE_TELEMETRY_BACKEND_PORT
+          value: '4167'
+----
++
+
+. Restart the {devworkspace}
+
+. From a terminal window, run the application by running the following command within a {devworkspace}:
+
++
 ----
 $ mvn quarkus:dev -Dquarkus.http.port=${DEVWORKSPACE_TELEMETRY_BACKEND_PORT}
 ----
++
 
-If {prod-short} is secured using a self-signed certificate, add the certificate to a trust store and mount it into the workspace. Also add the Java system property, `-Djavax.net.ssl.trustStore=/path/to/trustStore`, to the `mvn` command. For example, assuming the trust store is located in `$JAVA_HOME/jre/lib/security/cacerts`:
+If {prod-short} is secured with a self-signed certificate, add the certificate to a trust store and mount it into the workspace. Also add the Java system property, `-Djavax.net.ssl.trustStore=/path/to/trustStore`, to the `mvn` command. For example, assuming the trust store is located in `$JAVA_HOME/jre/lib/security/cacerts`:
 
 [subs="+quotes"]
 ----
@@ -119,48 +173,9 @@ $ keytool -import -alias self-signed-certificate \
 Followed by:
 
 ----
-$ mvn quarkus:dev -Dquarkus.http.port=${CHE_WORKSPACE_TELEMETRY_BACKEND_PORT} \
+$ mvn quarkus:dev -Dquarkus.http.port=${DEVWORKSPACE_TELEMETRY_BACKEND_PORT} \
   -Djavax.net.ssl.trustStore=$JAVA_HOME/jre/lib/security/cacerts
 ----
-
-== Creating a concrete implementation of AnalyticsManager and adding specialized logic
-
-Create two new files in your project:
-
-* `AnalyticsManager.java` - contains the logic specific to the telemetry system.
-* `MainConfiguration.java` - contains configuration provided to `AnalyticsManager`.
-
-.`AnalyticsManager.java`
-====
-[source,java]
-----
-include::example$telemetry/AnalyticsManagerSkeleton.java[]
-----
-====
-
-.`MainConfiguration.java`
-====
-[source,java]
-----
-include::example$telemetry/MainConfiguration.java[]
-----
-====
-<1> A MicroProfile configuration annotation is used to inject the `welcome.message` configuration.
-<2> Declaring an optional configuration
-
-For more details on how to provide configuration properties specific to your back-end, see the Quarkus link:https://quarkus.io/guides/config-reference[Configuration Reference Guide].
-
-
-.`application.properties`
-====
-[source,properties]
-----
-include::example$telemetry/application.properties[]
-----
-====
-
-
-Since `org.my.group.AnalyticsManager` and `org.my.group.MainConfiguration` are alternative beans, specify them using the `quarkus.arc.selected-alternatives` property in `src/main/resources/application.properties`.
 
 
 == Implementing `isEnabled()`
@@ -197,16 +212,14 @@ include::example$telemetry/TelemetryService.java[]
 <1> The endpoint to make the `POST` request to.
 +
 
-. Specify the base URL for `TelemetryService` in the `application.properties` file
+. Specify the base URL for `TelemetryService` in the `src/main/resources/application.properties` file:
 
 +
 .`application.properties`
 ====
-[source,properties]
 ----
-include::example$telemetry/rest-client.properties[]
+org.my.group.TelemetryService/mp-rest/url=http://little-telemetry-server-che.apps-crc.testing
 ----
-====
 +
 
 . Inject `TelemetryService` into `AnalyticsManager` and send a `POST` request in `onEvent()`
@@ -221,7 +234,7 @@ include::example$telemetry/onEvent.java[]
 ====
 +
 
-This sends an HTTP request to the telemetry server and automatically delays identical events for a small period of time. The default duration is 1500 milliseconds. You can modify the duration by setting subclasses.
+This sends an HTTP request to the telemetry server and automatically delays identical events for a small period of time. The default duration is 1500 milliseconds.
 
 == Implementing `increaseDuration()`
 
@@ -237,7 +250,7 @@ include::example$telemetry/increaseDuration.java[]
 
 == Implementing `onActivity()`
 
-Set an inactive timeout limit, and use `onActivity()` to send a `WORKSPACE_INACTIVE` event if the last event time is longer than the inactivity timeout.
+Set an inactive timeout limit, and use `onActivity()` to send a `WORKSPACE_INACTIVE` event if the last event time is longer than the timeout.
 
 .`AnalyticsManager.java`
 ====
@@ -259,8 +272,9 @@ include::example$telemetry/destroy.java[]
 ----
 ====
 
-Running `mvn quarkus:dev` as described in xref:running-the-application_{context}[] displays the `WORKSPACE_STOPPED` event, sent to the server when the Quarkus application is terminated.
+Running `mvn quarkus:dev` as described in xref:running-the-application_{context}[] and terminating the application sends `WORKSPACE_STOPPED` event sent to the server.
 
+[id="packaging-the-quarkus-application"]
 == Packaging the Quarkus application
 
 See link:https://quarkus.io/guides/building-native-image#using-a-multi-stage-docker-build[the Quarkus documentation] for the best instructions to package the application in a container. Build and push the container to a container registry of your choice.
@@ -276,7 +290,7 @@ include::example$telemetry/Dockerfile.jvm[]
 ====
 To build the image, run:
 ----
-./mvnw package && \
+mvn package && \
 docker build -f src/main/docker/Dockerfile.jvm -t image:tag .
 ----
 
@@ -291,7 +305,7 @@ include::example$telemetry/Dockerfile.native[]
 ====
 To build the image, run:
 ----
-./mvnw package -Pnative -Dquarkus.native.container-build=true && \
+mvn package -Pnative -Dquarkus.native.container-build=true && \
 docker build -f src/main/docker/Dockerfile.native -t image:tag .
 ----
 
@@ -307,7 +321,8 @@ include::example$telemetry/sample_plugin.yaml[]
 ----
 ====
 
-<1> Specify the container image built from here
+<1> Specify the container image built from xref:packaging-the-quarkus-application[]
+<2> Setting the value for the `welcome.message` optional configuration property from Example 5.
 
 Typically, the user deploys this file to a corporate web server. This guide demonstrates how to create an Apache web server on OpenShift and host the plug-in there.
 
@@ -340,12 +355,8 @@ After the deployment has started to start, confirm that `plugin.yaml` is availab
 $ curl apache-che.apps-crc.testing/plugin.yaml
 ----
 
-This command should return the `plugin.yaml` file.
-
-
-== Running the telemetry plug-in in a {devworkspace}
-. Create a new {devworkspace}
-. Add the following to the `components` field:
+== Specifying the telemetry plug-in in a {devworkspace}
+. Add the following to the `components` field to an existing {devworkspace}:
 
 +
 ----
@@ -359,7 +370,9 @@ components:
 
 . Start the {devworkspace} from the {prod} dashboard.
 
-== Starting the telemetry plug-in for all {devworkspace}s
+TODO, after starting how to verify that it is running?
+
+== Applying the telemetry plug-in for all {devworkspace}s
 
 Set the telemetry plug-in as a default plug-in in the `spec.server.workspaceDefaultPlugins` field for the `CheCluster` custom resource. Default plug-ins are applied on {devworkspace} startup for new and existing {devworkspace}s.
 ----
@@ -368,8 +381,8 @@ spec:
   server:
     ...
     workspacesDefaultPlugins:
-    - editor: eclipse/che-theia/next              <1>
-      plugins:                                    <2>
+    - editor: eclipse/che-theia/next     <1>
+      plugins:                           <2>
       - 'apache-che.apps-crc.testing/plugin.yaml'
 ----
 
@@ -383,7 +396,7 @@ xref:installation-guide:understanding-the-checluster-custom-resource.adoc[].
 
 .Verification steps
 
-. Start a new {devworkspace} from the {prod} dashboard.
+. Start a new or existing {devworkspace} from the {prod} dashboard.
 
 
 // After saving the changes,  . See a new message stating that the plug-in is being installed into the workspace.
