@@ -25,7 +25,7 @@ This document describes the steps required to extend the {prod-short} telemetry 
 . Packaging the telemetry back-end in a container and deploying it to an image registry
 . Adding a plug-in for your back-end and instructing {prod-short} to load the plug-in in your {devworkspace}s
 
-A finished example of the telemetry back-end is available here.
+A finished example of the telemetry back-end is available link:https://github.com/che-incubator/devworkspace-telemetry-example-plugin[here].
 
 [discrete]
 == Creating a server that receives events
@@ -77,6 +77,8 @@ $ mvn io.quarkus:quarkus-maven-plugin:2.7.1.Final:create \
 ----
 
 pass:[<!-- vale RedHat.TermsErrors = YES -->]
+
+. For the purposes of this example, remove the files under `src/test/java/mygroup`.
 
 . Add the following dependencies to your `pom.xml`:
 +
@@ -131,10 +133,12 @@ include::example$telemetry/AnalyticsManagerSkeleton.java[]
 
 Since `org.my.group.AnalyticsManager` and `org.my.group.MainConfiguration` are alternative beans, specify them using the `quarkus.arc.selected-alternatives` property in `src/main/resources/application.properties`.
 
+.`application.properties`
+====
 ----
 quarkus.arc.selected-alternatives=MainConfiguration,AnalyticsManager
 ----
-
+====
 
 [id="running-the-application_{context}"]
 == Running the application within a {devworkspace}
@@ -161,6 +165,9 @@ spec:
 $ mvn quarkus:dev -Dquarkus.http.port=${DEVWORKSPACE_TELEMETRY_BACKEND_PORT}
 ----
 +
+
+The application now receives telemetry events via port `4167` from the front-end plug-in.
+
 
 If {prod-short} is secured with a self-signed certificate, add the certificate to a trust store and mount it into the workspace. Also add the Java system property, `-Djavax.net.ssl.trustStore=/path/to/trustStore`, to the `mvn` command. For example, assuming the trust store is located in `$JAVA_HOME/jre/lib/security/cacerts`:
 
@@ -220,6 +227,7 @@ include::example$telemetry/TelemetryService.java[]
 ----
 org.my.group.TelemetryService/mp-rest/url=http://little-telemetry-server-che.apps-crc.testing
 ----
+====
 +
 
 . Inject `TelemetryService` into `AnalyticsManager` and send a `POST` request in `onEvent()`
@@ -322,7 +330,7 @@ include::example$telemetry/sample_plugin.yaml[]
 ====
 
 <1> Specify the container image built from xref:packaging-the-quarkus-application[]
-<2> Setting the value for the `welcome.message` optional configuration property from Example 5.
+<2> Setting the value for the `welcome.message` optional configuration property from Example 4.
 
 Typically, the user deploys this file to a corporate web server. This guide demonstrates how to create an Apache web server on OpenShift and host the plug-in there.
 
@@ -335,7 +343,7 @@ $ oc create configmap --from-file=plugin.yaml -n {prod-namespace} telemetry-plug
 
 Create a deployment, a service, and a route to expose the web server. The deployment references this ConfigMap and places it in the `/var/www/html` directory.
 
-.`manifests.yaml`
+.`manifest.yaml`
 ====
 [source,yaml,subs="+quotes,+attributes"]
 ----
@@ -344,7 +352,7 @@ include::example$telemetry/webserver.yaml[]
 ====
 
 ----
-$ oc apply -f manifests.yaml
+$ oc apply -f manifest.yaml
 ----
 
 .Verification steps
@@ -364,7 +372,7 @@ components:
   ...
   - name: telemetry-plugin
     plugin:
-      uri: apache-che.apps-crc.testing/plugin.yaml
+      uri: http://apache-che.apps-crc.testing/plugin.yaml
 ----
 +
 

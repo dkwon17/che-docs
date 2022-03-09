@@ -1,6 +1,6 @@
 [id="creating-a-telemetry-plugin"]
 // = Creating a telemetry plugin
-:navtitle: Creating A Telemetry Plugin
+:navtitle: Creating A Telemetry Back-end Plugin
 :keywords: extensions, telemetry
 :page-aliases: .:creating-a-telemetry-plugin
 

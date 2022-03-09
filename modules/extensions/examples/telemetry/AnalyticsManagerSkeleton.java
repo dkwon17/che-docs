@@ -36,27 +36,20 @@ public class AnalyticsManager extends AbstractAnalyticsManager {
 
     @Override
     public boolean isEnabled() {
-        // TODO Auto-generated method stub
         return true;
     }
 
     @Override
-    public void destroy() {
-        // TODO Auto-generated method stub
-    }
+    public void destroy() {}
 
     @Override
     public void onEvent(AnalyticsEvent event, String ownerId, String ip, String userAgent, String resolution, Map<String, Object> properties) {
-        // TODO Auto-generated method stub
+        LOG.info("The received event is: {}", event);
     }
 
     @Override
-    public void increaseDuration(AnalyticsEvent event, Map<String, Object> properties) {
-        // TODO Auto-generated method stub
-    }
+    public void increaseDuration(AnalyticsEvent event, Map<String, Object> properties) { }
 
     @Override
-    public void onActivity() {
-        // TODO Auto-generated method stub
-    }
+    public void onActivity() {}
 }
