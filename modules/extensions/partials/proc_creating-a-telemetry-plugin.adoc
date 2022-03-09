@@ -11,7 +11,7 @@ This section shows how to create an `AnalyticsManager` class that extends link:h
 
 The following sections cover:
 
-* Creation of a telemetry server to echo events to standard output.
+* Creating a telemetry server to echo events to standard output.
 * Extending the {prod-short} telemetry client and implementing a user's custom back-end.
 * Creating a `plugin.yaml` file representing a {devworkspace} plug-in for the custom back-end.
 * Specifying of a location of a custom plug-in to {prod-short} by setting the `workspacesDefaultPlugins` attribute from the `CheCluster` custom resource.
@@ -130,6 +130,7 @@ include::example$telemetry/AnalyticsManagerSkeleton.java[]
 ----
 ====
 <1> Log the welcome message if it was provided
+<2> Log the event received from the front-end plug-in
 
 Since `org.my.group.AnalyticsManager` and `org.my.group.MainConfiguration` are alternative beans, specify them using the `quarkus.arc.selected-alternatives` property in `src/main/resources/application.properties`.
 
@@ -156,34 +157,54 @@ spec:
 ----
 +
 
-. Restart the {devworkspace}
+. Restart the {devworkspace}.
 
-. From a terminal window, run the application by running the following command within a {devworkspace}:
-
+. From a terminal window, run the application by running the following command within a {devworkspace}. Use the `--settings` flag to specify the location of the `settings.xml` file that contains the GitHub access token.
 +
 ----
-$ mvn quarkus:dev -Dquarkus.http.port=${DEVWORKSPACE_TELEMETRY_BACKEND_PORT}
+$ mvn --settings=settings.xml quarkus:dev -Dquarkus.http.port=${DEVWORKSPACE_TELEMETRY_BACKEND_PORT}
 ----
+
 +
+The application now receives telemetry events through port `4167` from the front-end plug-in.
 
-The application now receives telemetry events via port `4167` from the front-end plug-in.
-
-
++
 If {prod-short} is secured with a self-signed certificate, add the certificate to a trust store and mount it into the workspace. Also add the Java system property, `-Djavax.net.ssl.trustStore=/path/to/trustStore`, to the `mvn` command. For example, assuming the trust store is located in `$JAVA_HOME/jre/lib/security/cacerts`:
 
++
 [subs="+quotes"]
 ----
 $ keytool -import -alias self-signed-certificate \
   -file _<path/to/self-signed-certificate>_ -keystore $JAVA_HOME/jre/lib/security/cacerts
 ----
 
++
 Followed by:
 
++
 ----
 $ mvn quarkus:dev -Dquarkus.http.port=${DEVWORKSPACE_TELEMETRY_BACKEND_PORT} \
   -Djavax.net.ssl.trustStore=$JAVA_HOME/jre/lib/security/cacerts
 ----
 
+.Verification steps
+. Verify that the following output is be logged:
+
++
+----
+INFO  [org.ecl.che.inc.AnalyticsManager] (Quarkus Main Thread) No welcome message provided
+INFO  [io.quarkus] (Quarkus Main Thread) devworkspace-telemetry-example-plugin 1.0.0-SNAPSHOT on JVM (powered by Quarkus 2.7.2.Final) started in 0.323s. Listening on: http://localhost:4167
+INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, kubernetes-client, rest-client, rest-client-jackson, resteasy, resteasy-jsonb, smallrye-context-propagation, smallrye-openapi, swagger-ui, vertx]
+----
+
+. To verify that the `onEvent()` method of `AnalyticsManager` receives events from the front-end plug-in, press the kbd:[l] key to disable Quarkus live coding and edit any file within the IDE. The following output should be logged:
+
++
+----
+INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (Aesh InputStream Reader) Live reload disabled
+INFO  [org.ecl.che.inc.AnalyticsManager] (executor-thread-2) The received event is: Edit Workspace File in Che
+----
 
 == Implementing `isEnabled()`
 
@@ -280,14 +301,14 @@ include::example$telemetry/destroy.java[]
 ----
 ====
 
-Running `mvn quarkus:dev` as described in xref:running-the-application_{context}[] and terminating the application sends `WORKSPACE_STOPPED` event sent to the server.
+Running `mvn quarkus:dev` as described in xref:running-the-application_{context}[] and terminating the application with kbd:[Ctrl+C] sends `WORKSPACE_STOPPED` event sent to the server.
 
 [id="packaging-the-quarkus-application"]
 == Packaging the Quarkus application
 
 See link:https://quarkus.io/guides/building-native-image#using-a-multi-stage-docker-build[the Quarkus documentation] for the best instructions to package the application in a container. Build and push the container to a container registry of your choice.
 
-==== Sample Dockerfile used to build a Quarkus image running with JVM
+=== Sample Dockerfile for building a Quarkus image running with JVM
 
 .`Dockerfile.jvm`
 ====
@@ -302,7 +323,7 @@ mvn package && \
 docker build -f src/main/docker/Dockerfile.jvm -t image:tag .
 ----
 
-==== Sample Dockerfile for Quarkus native image
+=== Sample Dockerfile for building a Quarkus native image
 
 .`Dockerfile.native`
 ====
@@ -338,7 +359,7 @@ Create a ConfigMap referencing the new `plugin.yaml` file.
 
 [subs="+attributes"]
 ----
-$ oc create configmap --from-file=plugin.yaml -n {prod-namespace} telemetry-plugin-meta
+$ oc create configmap --from-file=plugin.yaml -n {prod-namespace} telemetry-plugin-yaml
 ----
 
 Create a deployment, a service, and a route to expose the web server. The deployment references this ConfigMap and places it in the `/var/www/html` directory.
@@ -363,6 +384,7 @@ After the deployment has started to start, confirm that `plugin.yaml` is availab
 $ curl apache-che.apps-crc.testing/plugin.yaml
 ----
 
+[id="specifying-the-telemetry-plug-in-in-a-{devworkspace}"]
 == Specifying the telemetry plug-in in a {devworkspace}
 . Add the following to the `components` field to an existing {devworkspace}:
 
@@ -378,7 +400,16 @@ components:
 
 . Start the {devworkspace} from the {prod} dashboard.
 
-TODO, after starting how to verify that it is running?
+
+.Verification steps
+
+. Verify that the `telemetry-plugin` container is running in the {devworkspace} pod. Here, this is verified by checking the Workspace view within the editor.
+
++
+image::telemetry/devworkspace_telemetry_sample_plugin.png[]
+
+. Edit files within the editor and observe their events in the example telemetry server logs.
+
 
 == Applying the telemetry plug-in for all {devworkspace}s
 
@@ -391,7 +422,7 @@ spec:
     workspacesDefaultPlugins:
     - editor: eclipse/che-theia/next     <1>
       plugins:                           <2>
-      - 'apache-che.apps-crc.testing/plugin.yaml'
+      - 'http://apache-che.apps-crc.testing/plugin.yaml'
 ----
 
 <1> The editorId to set default plug-ins for
@@ -406,9 +437,4 @@ xref:installation-guide:understanding-the-checluster-custom-resource.adoc[].
 
 . Start a new or existing {devworkspace} from the {prod} dashboard.
 
-
-// After saving the changes,  . See a new message stating that the plug-in is being installed into the workspace.
-
-// image::telemetry/custom_telemetry_plugin.png[Custom telemetry plug-in]
-
-// Perform any operations in the started workspace and observe their events in the example telemetry server logs.
+. Verify that the telemetry plug-in is working by following the verification steps for xref:specifying-the-telemetry-plug-in-in-a-{devworkspace}[].

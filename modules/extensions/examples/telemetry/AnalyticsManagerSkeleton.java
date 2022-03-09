@@ -25,10 +25,7 @@ public class AnalyticsManager extends AbstractAnalyticsManager {
     public AnalyticsManager(MainConfiguration mainConfiguration, DevWorkspaceFinder devworkspaceFinder, UsernameFinder usernameFinder) {
         super(mainConfiguration, devworkspaceFinder, usernameFinder);
 
-        /**
-         * Log the welcome message if it was provided
-         */
-        mainConfiguration.welcomeMessage.ifPresentOrElse(
+        mainConfiguration.welcomeMessage.ifPresentOrElse(     <1>
             (str) -> LOG.info("The welcome message is: {}", str),
             () -> LOG.info("No welcome message provided")
         );
@@ -44,7 +41,7 @@ public class AnalyticsManager extends AbstractAnalyticsManager {
 
     @Override
     public void onEvent(AnalyticsEvent event, String ownerId, String ip, String userAgent, String resolution, Map<String, Object> properties) {
-        LOG.info("The received event is: {}", event);
+        LOG.info("The received event is: {}", event);         <2>
     }
 
     @Override

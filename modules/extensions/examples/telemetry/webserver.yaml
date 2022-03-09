@@ -13,9 +13,9 @@ spec:
         app: apache
     spec:
       volumes:
-        - name: plugin-meta-yaml
+        - name: plugin-yaml
           configMap:
-            name: telemetry-plugin-meta
+            name: telemetry-plugin-yaml
             defaultMode: 420
       containers:
         - name: apache
@@ -25,7 +25,7 @@ spec:
               protocol: TCP
           resources: {}
           volumeMounts:
-            - name: plugin-meta-yaml
+            - name: plugin-yaml
               mountPath: /var/www/html
   strategy:
     type: RollingUpdate
