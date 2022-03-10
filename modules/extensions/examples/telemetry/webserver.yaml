@@ -2,7 +2,6 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: apache
-  namespace: __<{prod-namespace}>__
 spec:
   replicas: 1
   selector:
@@ -14,9 +13,9 @@ spec:
         app: apache
     spec:
       volumes:
-        - name: plugin-meta-yaml
+        - name: plugin-yaml
           configMap:
-            name: telemetry-plugin-meta
+            name: telemetry-plugin-yaml
             defaultMode: 420
       containers:
         - name: apache
@@ -26,7 +25,7 @@ spec:
               protocol: TCP
           resources: {}
           volumeMounts:
-            - name: plugin-meta-yaml
+            - name: plugin-yaml
               mountPath: /var/www/html
   strategy:
     type: RollingUpdate
@@ -40,7 +39,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: apache
-  namespace: __<{prod-namespace}>__
 spec:
   ports:
     - protocol: TCP
@@ -54,7 +52,6 @@ kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
   name: apache
-  namespace: __<{prod-namespace}>__
 spec:
   host: apache-che.apps-crc.testing
   to:

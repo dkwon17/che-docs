@@ -1,3 +1,4 @@
 .Extensions
         
-
+* xref:telemetry.adoc[]
+** xref:creating-a-telemetry-plugin.adoc[]
