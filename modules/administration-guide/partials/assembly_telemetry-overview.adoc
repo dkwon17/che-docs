@@ -1,0 +1,45 @@
+:parent-context-of-telemetry-overview: {context}
+
+[id="telemetry-overview_{context}"]
+= Telemetry overview
+
+:context: telemetry-overview
+
+Telemetry is the explicit and ethical collection of operation data. By default, telemetry is not available for {devworkspace}s, but there is an abstract API that allows enabling telemetry by using the plug-in mechanism.
+
+This documentation includes a guide describing how to make your own telemetry client for {devworkspace}s.
+
+
+
+== Use cases
+[id="use-cases_{context}"]
+
+{prod} telemetry API allows tracking:
+
+* The duration the {devworkspace} is being used for.
+* User-driven actions such as file editing, committing, and pushing to remote repositories.
+* Programming languages and devfiles used in workspaces.
+
+== How it works
+[id="how-it-works_{context}"]
+
+When a {devworkspace} starts, the `che-theia` container starts the telemetry plug-in, which is responsible for sending telemetry events to a back-end plug-in. If the `$DEVWORKSPACE_TELEMETRY_BACKEND_PORT` environment variable was set in the workspace Pod, the telemetry plug-in will send events to a back-end plug-in listening at that port.
+
+If the {devworkspace} has a telemetry back-end container running, and it is listening on `$DEVWORKSPACE_TELEMETRY_BACKEND_PORT`, it receives the events sent by the telemetry plug-in, turns them into the back-end-specific representation of events, and sends them to a configured analytics service (for example, Segment or Woopra).
+
+image::telemetry/telemetry_diagram.png[]
+
+== Events sent to the backend by the Che-Theia telemetry plug-in
+
+[cols="2,5", options="header"]
+:=== 
+ Event: Description 
+WORKSPACE_OPENED: Sent when Che-Theia starts running
+COMMIT_LOCALLY: Sent when a commit was made locally with the `git.commit` Theia command
+PUSH_TO_REMOTE: Sent when a Git push was made with the `git.push` Theia command
+EDITOR_USED: Sent when a file was changed within the editor
+:=== 
+
+Other events such as `WORKSPACE_INACTIVE` and `WORKSPACE_STOPPED` can be detected within the back-end plug-in.
+
+:context: {parent-context-of-telemetry-overview}
