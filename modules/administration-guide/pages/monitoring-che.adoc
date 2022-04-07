@@ -1,11 +1,11 @@
-:navtitle: Monitoring {prod-short}
+:navtitle: Monitoring {prod-short} server
 :keywords: administration-guide, monitoring-che
 :page-aliases: .:monitoring-che, .:tracing-che, tracing-che
 
 [id="monitoring-{prod-id-short}_{context}"]
-= Monitoring {prod-short}
+= Monitoring {prod-short} server
 
-This chapter describes how to configure {prod-short} to expose metrics and how to build an example monitoring stack with external tools to process data exposed as metrics by {prod-short}.
+This chapter describes how to configure {prod-short} to expose JVM metrics from the {prod-short} server, such as JVM memory and class loading.
 
 include::partial$proc_enabling-and-exposing-che-metrics.adoc[leveloffset=+1]
 
@@ -16,7 +16,5 @@ ifeval::["{project-context}" == "che"]
 include::partial$proc_viewing-che-metrics-on-grafana-dashboards.adoc[leveloffset=+1]
 
 include::partial$ref_grafana-dashboards-for-che.adoc[leveloffset=+1]
-
-include::partial$proc_developing-grafana-dashboards.adoc[leveloffset=+1]
 
 endif::[]
