@@ -5,7 +5,7 @@
 [id="monitoring-{prod-id-short}_{context}"]
 = Monitoring {prod-short} server
 
-This chapter describes how to configure {prod-short} to expose JVM metrics from the {prod-short} server, such as JVM memory and class loading.
+You can configure {prod-short} to expose JVM metrics from the {prod-short} server, such as JVM memory and class loading.
 
 include::partial$proc_enabling-and-exposing-che-metrics.adoc[leveloffset=+1]
 
@@ -14,7 +14,5 @@ include::partial$proc_collecting-che-metrics-with-prometheus.adoc[leveloffset=+1
 ifeval::["{project-context}" == "che"]
 
 include::partial$proc_viewing-che-metrics-on-grafana-dashboards.adoc[leveloffset=+1]
-
-include::partial$ref_grafana-dashboards-for-che.adoc[leveloffset=+1]
 
 endif::[]

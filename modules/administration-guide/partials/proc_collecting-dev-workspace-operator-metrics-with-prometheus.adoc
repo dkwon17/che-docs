@@ -10,7 +10,7 @@ To use the Prometheus to collect, store, and query metrics about the {devworkspa
 
 * The `devworkspace-webhookserver` Service is exposing metrics on port `9443`. By default, the Service exposes metrics on port `9443`.
 
-* Prometheus 2.26.0 or later is running. The Prometheus console is running on port `9090` with a corresponding *service* and *route*. See link:https://prometheus.io/docs/introduction/first_steps/[First steps with Prometheus].
+* Prometheus 2.26.0 or later is running. The Prometheus console is running on port `9090` with a corresponding `service` and `route`. See link:https://prometheus.io/docs/introduction/first_steps/[First steps with Prometheus].
 
 .Procedure
 
