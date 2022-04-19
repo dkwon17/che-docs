@@ -1,0 +1,29 @@
+// Module included in the following assemblies:
+//
+// supported_platforms
+
+The following section provides information about the availability of {prod-short} {prod-ver} on {platforms-name} infrastructures.
+
+{prod} can be installed on:
+
+* {kubernetes} infrastructures starting at version {kube-ver-min}
+* {ocp} starting at version 4.8
+
+{prod} can be installed on all major Public Clouds such as:
+
+* Amazon Web Services
+* Google Cloud
+* IBM Cloud
+* Microsoft Azure
+* Rancher
+
+WARNING: Setting up link:https://kubernetes.io/docs/reference/access-authn-authz/authentication/[Users' Authentication] is required for deploying {prod-short} on {kubernetes} infrastructures. For {ocp} no additional setup is needed.
+
+The following options are available for the local installation:
+
+* link:https://minikube.sigs.k8s.io/docs/[minikube]
+* link:https://developers.redhat.com/products/codeready-containers/overview[CodeReady Containers]
+
+.Additional resources
+
+* xref:installing-che.adoc[]

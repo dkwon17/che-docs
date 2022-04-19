@@ -10,7 +10,7 @@ const { parallel, series, src, watch } = require('gulp')
 const yaml = require('js-yaml')
 
 const playbookFilename = 'antora-playbook-for-development.yml'
-const playbook = yaml.safeLoad(fs.readFileSync(playbookFilename, 'utf8'))
+const playbook = yaml.load(fs.readFileSync(playbookFilename, 'utf8'))
 const outputDir = (playbook.output || {}).dir || './build/site'
 const serverConfig = { name: 'Preview Site', livereload, host: '0.0.0.0', port: 4000, root: outputDir }
 const antoraArgs = ['--playbook', playbookFilename]
@@ -32,7 +32,7 @@ function generate(done) {
 async function serve(done) {
   connect.server(serverConfig, function () {
     this.server.on('close', done)
-    watch(watchPatterns, series(generate, testlang, testhtml))
+    watch(watchPatterns, series(generate, testlang, testhtml, detect_unused_content, antora_to_plain_asciidoc))
     if (livereload) watch(this.root).on('change', (filepath) => src(filepath, { read: false }).pipe(livereload()))
   })
 }
@@ -55,12 +55,10 @@ async function environment_docs_gen() {
   // Report script errors but don't make gulp fail.
   try {
     const { stdout, stderr } = await exec('tools/environment_docs_gen.sh')
-    console.log(stdout);
-    console.error(stderr);
+    console.log(stdout, stderr);
   }
   catch (error) {
-    console.log(error.stdout);
-    console.log(error.stderr);
+    console.log(error.stdout, error.stderr);
     return;
   }
 }
@@ -69,12 +67,10 @@ async function testhtml() {
   // Report links errors but don't make gulp fail.
   try {
     const { stdout, stderr } = await exec('htmltest')
-    console.log(stdout);
-    console.error(stderr);
+    console.log(stdout, stderr);
   }
   catch (error) {
-    console.log(error.stdout);
-    console.log(error.stderr);
+    console.log(error.stdout, error.stderr);
     return;
   }
 }
@@ -83,12 +79,34 @@ async function testlang() {
   // Report language errors but don't make gulp fail.
   try {
     const { stdout, stderr } = await exec('./tools/validate_language_changes.sh')
-    console.log(stdout);
-    console.error(stderr);
+    console.log(stdout, stderr);
   }
   catch (error) {
-    console.log(error.stdout);
-    console.log(error.stderr);
+    console.log(error.stdout, error.stderr);
+    return;
+  }
+}
+
+async function detect_unused_content() {
+  // Report unused images but don't make gulp fail.
+  try {
+    const { stdout, stderr } = await exec('./tools/detect-unused-content.sh')
+    console.log(stdout, stderr);
+  }
+  catch (error) {
+    console.log(error.stdout, error.stderr);
+    return;
+  }
+}
+
+async function antora_to_plain_asciidoc() {
+  // Report unused images but don't make gulp fail.
+  try {
+    const { stdout, stderr } = await exec('./tools/antora-to-plain-asciidoc.sh')
+    console.log(stdout, stderr);
+  }
+  catch (error) {
+    console.log(error.stdout, error.stderr);
     return;
   }
 }
@@ -97,5 +115,5 @@ exports.default = series(
   parallel(checluster_docs_gen, environment_docs_gen),
   generate,
   serve,
-  parallel(testlang, testhtml)
+  parallel(testlang, testhtml, detect_unused_content, antora_to_plain_asciidoc)
 );
