@@ -1,12 +1,12 @@
 :_content-type: ASSEMBLY
-:navtitle: Uninstalling {prod-short} on OpenShift
+:navtitle: Uninstalling {prod-short} after OperatorHub installation
 :keywords: administration guide, uninstalling-che, uninstalling-che-after-operatorhub-installation
 :page-aliases: .:installation-guide:uninstalling-che-after-operatorhub-installation
 
 [id="uninstalling-{prod-id-short}-on-openshift_{context}"]
-= Uninstalling {prod-short} on OpenShift
+= Uninstalling {prod-short} after OperatorHub installation
 
-To uninstall an {prod} instance that was installed using the OperatorHub on the {ocp} or {osd}:
+To uninstall an {prod} instance that was installed using OperatorHub on {ocp} or {osd}:
 
 . Uninstall the {devworkspace} Operator and related Custom Resources.
 

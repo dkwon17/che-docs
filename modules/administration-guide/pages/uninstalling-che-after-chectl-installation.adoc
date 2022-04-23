@@ -1,16 +1,16 @@
 :_content-type: PROCEDURE
-:navtitle: Uninstalling {prod-short} by using {prod-cli}
+:navtitle: Uninstalling {prod-short} after {prod-cli} installation
 :keywords: administration guide, uninstalling-che, uninstalling-che-after-chectl-installation
 :page-aliases: installation-guide:uninstalling-che-after-chectl-installation
 
-[id="uninstalling-{prod-id-short}-by-using-{prod-cli}_{context}"]
-= Uninstalling {prod-short} by using `{prod-cli}`
+[id="uninstalling-{prod-id-short}-after-{prod-cli}-installation_{context}"]
+= Uninstalling {prod-short} after `{prod-cli}` installation
 
 To uninstall an instance of {prod} that was installed using the `{prod-cli}` tool:
 
 .Prerequisites
 
-* The `{prod-cli}` tool was used to install the {prod-short} instance on {orch-name}.
+* The `{prod-cli}` tool was used to install the {prod-short} instance on {platforms-name}.
 * The `{prod-cli}` and `{orch-cli}` tools are available.
 
 .Procedure
