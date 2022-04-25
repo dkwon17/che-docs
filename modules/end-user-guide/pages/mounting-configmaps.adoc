@@ -1,0 +1,67 @@
+:navtitle: Mounting ConfigMaps
+:keywords: user-guide, configuring, user, configmaps, configmap, mounting, mount
+:page-aliases:
+
+[id="mounting-configmaps_{context}"]
+= Mounting ConfigMaps
+
+You can automatically mount {orch-name} ConfigMaps to all {devworkspace} containers, creating permanent mount points for components such as configuration files: for example, the `settings.xml` file for Maven configuration.
+
+ConfigMaps are {orch-name} objects that store non-confidential data such as configuration values for an application.
+
+.Prerequisites
+
+* A running instance of {prod-short}.
+* You have CLI or GUI access to the {orch-name} cluster of your organization's {prod-short} instance.
+* For CLI users: The `{orch-cli}` command line tool is installed in the operating system you are using.
+
+.Procedure
+
+. Determine an existing ConfigMap or Secret in your user {orch-namespace} to mount to all {devworkspace} containers.
+
+. Set the required labels for mounting.
++
+[TIP]
+====
+CLI users can run `{orch-cli}`:
+
+`$ {orch-cli} label configmap __<ConfigMap_name>__ controller.devfile.io/mount-to-devworkspace=true controller.devfile.io/watch-configmap=true`
+====
+
+. Optional: Use the annotations to configure how the ConfigMap is mounted.
++
+.Optional annotations
+|===
+|Annotation | Description
+
+|`controller.devfile.io/mount-path:`
+| The mount path. Defaults to `/etc/config/__<ConfigMap_name>__`.
+
+|`controller.devfile.io/mount-as:`
+a| Set to `file`, `subpath` or `env` to specify how the resource should be mounted. Defaults to `file`.
+
+* If set to `file`, keys and values of the resource will be mounted as files within the mount path.
+* If set to `subpath`, keys and values of the resource will be mounted as files within the mount path using subpath volume mounts.
+* If set to `env`, the keys and values in the resource will be mounted as environment variables in all containers in the {devworkspace}.
+|===
+
+.Mounting a ConfigMap as environment variables
+====
+[source,yaml,subs="+quotes"]
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: my-settings
+  labels:
+    controller.devfile.io/mount-to-devworkspace: 'true'
+    controller.devfile.io/watch-configmap: 'true'
+  annotations:
+    controller.devfile.io/mount-as: env
+data:
+  __<env_var_1>__: __<value_1>__
+  __<env_var_2>__: __<value_2>__
+----
+
+When a {devworkspace} starts, environment variables `__<env_var_1>__` and `__<env_var_2>__` will be available in the {devworkspace} containers.
+====

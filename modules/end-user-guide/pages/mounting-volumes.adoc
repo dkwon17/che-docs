@@ -5,13 +5,15 @@
 [id="mounting-volumes_{context}"]
 = Mounting Volumes
 
-You can mount a Persistent Volume Claim (PVC) to your {devworkspace} containers. A PVC is used to request persistent storage resources which are abstracted from the user. This section describes how to automatically mount an existing PVC to all {devworkspace} containers.
+You can mount a Persistent Volume Claim (PVC) to your {devworkspace} containers. A PVC is used to request persistent storage resources which are abstracted from the user.
+
+To automatically mount an existing PVC to all {devworkspace} containers:
 
 .Prerequisites
 
 * A running instance of {prod-short}.
 * You have CLI or GUI access to the {orch-name} cluster of your organization's {prod-short} instance.
-* For CLI users: The `{orch-cli}` command line tool is installed in the operating system you are using.
+* For CLI users: The `{orch-cli}` command-line tool is installed in the operating system you are using.
 
 .Procedure
 
@@ -20,24 +22,25 @@ You can mount a Persistent Volume Claim (PVC) to your {devworkspace} containers.
 . Set the `controller.devfile.io/mount-to-devworkspace` label to `'true'`.
 
 +
-CLI users can apply the label by running:
+[TIP]
+====
+CLI users can apply the label like so:
 
-+
-[subs="+quotes,+attributes,+macros"]
-----
-$ {orch-cli} -n __<user_{orch-namespace}>__ label persistentvolumeclaim __<PVC_name>__ controller.devfile.io/mount-to-devworkspace=true
-----
+`$ {orch-cli} -n __<user_{orch-namespace}>__ label persistentvolumeclaim __<PVC_name>__ controller.devfile.io/mount-to-devworkspace=true`
+====
 
-. Optionally configure how the PVC is mounted using the following annotations:
+. Optional: Use the annotations to configure how the PVC is mounted.
 +
 .Optional annotations
-,===
- Annotation, Description
- `controller.devfile.io/mount-path`, Path to where the PVC should be mounted. Defaults to `/tmp/<pvc-name>`.
- `controller.devfile.io/read-only`,  Set to `'true'` or `'false'` to specify whether the PVC should be mounted as read-only. Defaults to `'false'` resulting in the PVC being mounted as read-write.
-,===
+|===
+| Annotation |Description
 
-See the following example:
+| `controller.devfile.io/mount-path:`
+| The mount path for the PVC. Defaults to `/tmp/__<PVC_name>__`.
+
+| `controller.devfile.io/read-only:`
+| Set to `'true'` or `'false'` to specify whether the PVC is to be mounted as read-only. Defaults to `'false'`, resulting in the PVC mounted as read-write.
+|===
 
 .Mounting a read-only PVC
 ====
