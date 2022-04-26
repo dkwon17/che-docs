@@ -12,7 +12,7 @@ ConfigMaps are {orch-name} objects that store non-confidential data such as conf
 .Prerequisites
 
 * A running instance of {prod-short}.
-* You have CLI or GUI access to the {orch-name} cluster of your organization's {prod-short} instance.
+* You have GUI or CLI access to the {orch-name} cluster of your organization's {prod-short} instance.
 * For CLI users: The `{orch-cli}` command line tool is installed in the operating system you are using.
 
 .Procedure

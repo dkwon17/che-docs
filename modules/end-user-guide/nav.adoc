@@ -10,7 +10,7 @@
 * xref:selecting-an-ide.adoc[]
 * xref:customizing-workspaces-components.adoc[]
 * xref:volumes-secrets-and-configmaps.adoc[]
-** xref:mounting-volumes.adoc[] 
+** xref:mounting-persistent-volumes.adoc[] 
 ** xref:mounting-configmaps.adoc[]
 ** xref:mounting-secrets.adoc[]
 ** xref:git-credential-store.adoc[]
