@@ -70,5 +70,5 @@ data:
   __<env_var_2>__: __<value_2>__
 ----
 
-When a workspace starts, environment variables `__<env_var_1>__` and `__<env_var_2>__` will be available in the workspace containers.
+When a workspace starts, the `__<env_var_1>__` and `__<env_var_2>__` environment variables will be available in the workspace containers.
 ====
