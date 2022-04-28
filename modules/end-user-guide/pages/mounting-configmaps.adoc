@@ -48,7 +48,7 @@ Defaults to `file`.
 
 `mount-as:subpath` mounts the keys and values within the mount path using subpath volume mounts.
 
-`mount-as:env` mounts the keys and values as environment variables in all containers in the {devworkspace}.
+`mount-as:env` mounts the keys and values as environment variables in all `{devworkspace}` containers.
 |===
 
 .Mounting a ConfigMap as environment variables
@@ -69,5 +69,5 @@ data:
   __<env_var_2>__: __<value_2>__
 ----
 
-When a workspace starts, the `__<env_var_1>__` and `__<env_var_2>__` environment variables will be available in the workspace containers.
+When you start a workspace, the `__<env_var_1>__` and `__<env_var_2>__` environment variables will be available in the `{devworkspace}` containers.
 ====
