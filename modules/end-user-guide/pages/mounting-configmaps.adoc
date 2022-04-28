@@ -5,9 +5,11 @@
 [id="mounting-configmaps_{context}"]
 = Mounting ConfigMaps
 
-You can automatically mount {orch-name} ConfigMaps to all workspace containers, creating permanent mount points for components for configuration files.
+To mount non-confidential configuration data into your workspaces, use {kubernetes} ConfigMaps.
 
-ConfigMaps are {orch-name} objects that store non-confidential data such as configuration values for an application.
+Using {kubernetes} ConfigMaps, you can mount non-sensitive data such as configuration values for an application.
+
+Mount {kubernetes} ConfigMaps to the `{devworkspace}` containers in the {orch-name} cluster of your organization's {prod-short} instance.
 
 .Prerequisites
 
