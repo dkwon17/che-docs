@@ -16,7 +16,7 @@ You can mount a Persistent Volume Claim (PVC) to your {devworkspace} containers.
 To avoid losing changes a user can either:
 
 * Pre-create a PVC with the right labels. This procedure is described in this section.
-* Specify a Persistent Volume (PV) in a Devfile that will be managed by {prod-short}. See link:https://devfile.io/docs/devfile/2.1.0/user-guide/specifying-persistent-storage[Specifiying persistent storage].
+* Specify a Persistent Volume (PV) in a Devfile that will be managed by {prod-short}. See link:https://devfile.io/docs/devfile/2.1.0/user-guide/specifying-persistent-storage[Specifying persistent storage].
 
 Users will want to use Devfile-defined volumes when persisted data is mandatory for development and doesn't need to be shared across multiple workspaces.
 
@@ -104,3 +104,8 @@ spec:
 
 When you start a workspace, the PVC is mounted at `/tmp/my-directory` in the `{devworkspace}` containers.
 ====
+
+.Additional resources
+
+* link:https://docs.openshift.com/container-platform/latest/storage/understanding-persistent-storage.html[Red Hat OpenShift Documentation: Understanding persistent storage]
+* link:https://kubernetes.io/docs/concepts/storage/persistent-volumes/[Kubernetes Documentation: Persistent Volumes]
