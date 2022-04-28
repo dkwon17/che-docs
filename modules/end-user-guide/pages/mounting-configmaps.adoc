@@ -11,7 +11,6 @@ ConfigMaps are {orch-name} objects that store non-confidential data such as conf
 
 .Prerequisites
 
-* A running instance of {prod-short}.
 * You have GUI or CLI access to the {orch-name} cluster of your organization's {prod-short} instance.
 * You have created a new ConfigMap or determined an existing one in your user {orch-namespace} to mount to all workspaces containers.
 * For CLI users: The `{orch-cli}` command line tool is installed in the operating system you are using.
@@ -45,11 +44,11 @@ Defaults to `/etc/config/__<ConfigMap_name>__`.
 
 Defaults to `file`.
 
-If `file`, mounts the keys and values as files within the mount path.
+`mount-as:file` mounts the keys and values as files within the mount path.
 
-If `subpath`, mounts the keys and values within the mount path using subpath volume mounts.
+`mount-as:subpath` mounts the keys and values within the mount path using subpath volume mounts.
 
-If `env`, mounts the keys and values as environment variables in all containers in the {devworkspace}.
+`mount-as:env` mounts the keys and values as environment variables in all containers in the {devworkspace}.
 |===
 
 .Mounting a ConfigMap as environment variables
