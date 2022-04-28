@@ -14,7 +14,7 @@
 ** xref:creating-image-pull-secrets.adoc[]
 ** xref:mounting-secrets.adoc[]
 ** xref:mounting-configmaps.adoc[]
-* xref:mounting-persistent-volumes.adoc[] 
+* xref:enabling-persistent-storage-in-workspaces.adoc[] 
 * xref:integrating-with-kubernetes.adoc[]
 ** xref:automatic-token-injection.adoc[]
 ** xref:navigating-che-from-openshift-developer-perspective.adoc[]

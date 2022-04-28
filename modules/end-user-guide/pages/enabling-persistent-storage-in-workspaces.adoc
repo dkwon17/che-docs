@@ -1,9 +1,9 @@
-:navtitle: Persistent storage in workspaces
+:navtitle: Enabling persistent storage in workspaces
 :keywords: user-guide, configuring, user, volumes, persistent, volume, claim, mounting, mount
 :page-aliases:
 
-[id="persistent-storage-in-workspaces_{context}"]
-= Persistent storage in workspaces
+[id="enabling-persistent-storage-in-workspaces_{context}"]
+= Enabling persistent storage in workspaces
 
 ****
 THIS PAGE IS WORK IN PROGRESS. max-cx
