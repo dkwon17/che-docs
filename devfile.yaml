@@ -9,7 +9,7 @@
 
 schemaVersion: 2.1.0
 metadata:
-  name: che-docs
+  name: che-docs-code
 
 components:
   - name: che-docs
