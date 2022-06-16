@@ -20,7 +20,9 @@ Alternatively, you can use the link:https://github.com/prometheus-operator/prome
 
 To install Prometheus and Grafana by using `template.yaml`:
 
-* Apply `template.yaml` to the cluster by running `{orch-cli} apply -f template.yaml`.
+* Create a new {orch-namespace} called `monitoring` by running `{orch-cli} create namespace monitoring`.
+
+* Apply `template.yaml` to the cluster by running `{orch-cli} apply -f template.yaml -n monitoring`.
 
 .`template.yaml`
 ====
@@ -120,6 +122,11 @@ metadata:
   name: prometheus-config
 data:
   prometheus.yml: |
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
 ---
 ----
 ====

@@ -14,7 +14,7 @@ To use Prometheus to collect, store, and query metrics about the {devworkspace} 
 
 .Procedure
 
-. Create a `ClusterRoleBinding` to bind the `ServiceAccount` associated with Prometheus to the link:https://github.com/devfile/devworkspace-operator/blob/main/deploy/deployment/kubernetes/objects/devworkspace-controller-metrics-reader.ClusterRole.yaml[devworkspace-controller-metrics-reader] `ClusterRole`.
+. Create a `ClusterRoleBinding` to bind the `prometheus-k8s` `ServiceAccount` associated with Prometheus to the link:https://github.com/devfile/devworkspace-operator/blob/main/deploy/deployment/kubernetes/objects/devworkspace-controller-metrics-reader.ClusterRole.yaml[devworkspace-controller-metrics-reader] `ClusterRole`.
 +
 NOTE: Without the `ClusterRoleBinding`, you cannot access {devworkspace} metrics because access is protected with role-based access control (RBAC).
 +
@@ -44,8 +44,8 @@ metadata:
   name: devworkspace-controller-metrics-binding
 subjects:
   - kind: ServiceAccount
-    name: __<ServiceAccount_name_associated_with_the_Prometheus_Pod>__
-    namespace: __<Prometheus_namespace>__
+    name: prometheus-k8s
+    namespace: monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -77,7 +77,7 @@ data:
           tls_config:
             insecure_skip_verify: true
           static_configs:
-            - targets: ['devworkspace-controller-metrics:8443'] <4>
+            - targets: ['devworkspace-controller-metrics.<DWO_namespace>:8443'] <4>
         - job_name: 'DevWorkspace webhooks'
           scheme: https
           authorization:
@@ -86,7 +86,7 @@ data:
           tls_config:
             insecure_skip_verify: true
           static_configs:
-            - targets: ['devworkspace-webhookserver:9443'] <5>
+            - targets: ['devworkspace-webhookserver.<DWO_namespace>:9443'] <5>
 ----
 <1> The rate at which a target is scraped.
 <2> The rate at which the recording and alerting rules are re-checked.
