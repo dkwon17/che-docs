@@ -13,6 +13,10 @@
 
 You can configure an example monitoring stack to process metrics exposed by the {devworkspace} Operator.
 
+Test change 1234
+
+One more change
+
 include::partial$proc_collecting-dev-workspace-operator-metrics-with-prometheus.adoc[leveloffset=+1]
 
 include::partial$ref_devworkspace-specific-metrics.adoc[leveloffset=+1]
