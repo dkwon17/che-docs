@@ -1,0 +1,10 @@
+:_content-type: ASSEMBLY
+:description: Introducing Multi-tenant Isolation
+:keywords: administration guide, supported-platforms, network policy, network policies, multi-tenant isolation
+:navtitle: Supported platforms
+:page-aliases: installation-guide:introducing-multi-tenant-isolation.adoc
+
+[id=introducing-multi-tenant-isolation_{context}"]
+= Introducing Multi-tenant Isolation
+
+Hello world!
