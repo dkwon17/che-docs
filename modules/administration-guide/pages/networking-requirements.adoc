@@ -1,0 +1,62 @@
+:_content-type: CONCEPT
+:description: Networking requirements
+:keywords: administration guide, configuring, namespace, network policy, network policies, multitenant isolation
+:navtitle: Networking requirements
+:page-aliases: installation-guide:networking-requirements.adoc
+
+[id="networking-requirements_{context}"]
+= Configuring Network Policies for Multitenant Isolation
+
+By default all Pods in a {orch-name} cluster can communicate with each other.
+In the context of {prod-short}, this makes it possible for a workspace Pod from one user {orch-namespace} to send traffic to another workspace Pod from a different user {orch-namespace}.
+For security, multi-tenant isolation can be configured by using NetworkPolicy objects to restrict all incoming communication to Pods in a user {orch-namespace}.
+
+However for {prod-short}, it is necessary for Pods in the {prod-short} {orch-namespace} to be able to communicate with Pods in {orch-namespace}s. 
+
+For a new {prod-short} installation with  multitenant isolation configured, can be configured by applying NetworkPolicy objects defined in `allow-from-eclipse-che.yaml` and `allow-same-namespace.yaml` for each user {orch-namespace}.
+
+The `allow-from-eclipse-che` NetworkPolicy allows incoming traffic from the {prod-short} namespace to all Pods in the user {orch-namespace}.
+
+.`allow-from-eclipse-che.yaml`
+====
+[source,yaml,subs="+quotes,attributes"]
+----
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    name: allow-from-eclipse-che
+spec:
+    ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+                kubernetes.io/metadata.name: {prod-namespace}   <1>
+    podSelector: {}   <2>
+    policyTypes:
+    - Ingress
+----
+====
+<1> The {prod-short} namespace. The default is `{prod-namespace}`.
+<2> The empty podSelector selects all pods in the {orch-namespace}.
+
+The `allow-same-namespace` NetworkPolicy allows all Pods in the user {orch-namespace} to accept incoming traffic from all Pods in its own {orch-namespace}.
+
+.`allow-same-namespace.yaml`
+====
+[source,yaml]
+----
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-same-namespace
+spec:
+  ingress:
+    - from:
+        - podSelector: {}   <1>
+  podSelector: {}           <2>
+  policyTypes:
+    - Ingress
+----
+====
+<1> The empty podSelector selects all pods in the {orch-namespace}.
+<2> The empty podSelector selects all pods in the {orch-namespace}.
