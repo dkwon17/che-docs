@@ -8,7 +8,7 @@
 #
 schemaVersion: 2.1.0
 metadata:
-  name: che-docs
+  name: che-docs-multi
 attributes:
   controller.devfile.io/storage-type: ephemeral
 components:
