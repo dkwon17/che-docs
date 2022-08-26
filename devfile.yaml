@@ -12,38 +12,67 @@ metadata:
 attributes:
   controller.devfile.io/storage-type: ephemeral
 components:
-  - name: tools
+  - name: che-docs
     container:
-      args:
-        - tail
-        - "-f"
-        - "/dev/null"
+      image: "quay.io/eclipse/che-docs:latest"
+      memoryLimit: 512M
+      mountSources: true
       endpoints:
-        - exposure: public
-          name: livereload
-          protocol: http
+        - name: open-livereload
           targetPort: 35729
-        - attributes:
-            path: /
-          exposure: public
-          name: preview-server
-          protocol: http
+        - name: open-preview-sv
           targetPort: 4000
-      image: "quay.io/eclipse/che-docs:next"
-      memoryLimit: 2Gi
-      memoryRequest: 256Mi
+          path: /che-7/overview/introduction-to-eclipse-che/
+
 commands:
-  - exec:
+  - id: generate-reference-tables-env
+    exec:
+      component: che-docs
+      workingDir: /projects/che-docs
+      commandLine: bash tools/environment_docs_gen.sh
+      label: Generate reference tables for environment variables
+  - id: generate-reference-tables-checluster
+    exec:
+      component: che-docs
+      workingDir: /projects/che-docs
+      commandLine: bash tools/checluster_docs_gen.sh
+      label: Generate reference tables for CheCluster
+  - id: start-preview-server
+    exec:
+      component: che-docs
+      workingDir: /projects/che-docs
       commandLine: sh tools/preview.sh
-      component: tools
-      group:
-        kind: build
       label: Start preview server
-      workingDir: "${PROJECT_SOURCE}"
-    id: start-preview-server
-  - exec:
+  - id: create-topic
+    exec:
+      component: che-docs
+      workingDir: /projects/che-docs
       commandLine: bash tools/newtopic.sh
-      component: tools
       label: Create a new topic
-      workingDir: "${PROJECT_SOURCE}"
-    id: create-a-new-topic
+  - id: validate-modular-doc
+    exec:
+      component: che-docs
+      workingDir: /projects/che-docs
+      commandLine: >-
+        echo 'Enter path to the file to validate and press Enter:';
+        read file;
+        bash tools/test-adoc.sh $file;
+      label: Validate Modular Doc
+  - id: validate-links
+    exec:
+      component: che-docs
+      workingDir: /projects/che-docs
+      commandLine: htmltest
+      label: Validate links
+  - id: validate-language-changes
+    exec:
+      component: che-docs
+      workingDir: /projects/che-docs
+      commandLine: sh tools/validate_language_changes.sh
+      label: Validate language changes
+  - id: detect-unused-images
+    exec:
+      component: che-docs
+      workingDir: /projects/che-docs
+      commandLine: bash tools/detect-unused-images.sh
+      label: Detect unused images
