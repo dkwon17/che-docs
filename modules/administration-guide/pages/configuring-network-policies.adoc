@@ -1,4 +1,4 @@
-:_content-type: CONCEPT
+:_content-type: PROCEDURE
 :description: Configuring network policies
 :keywords: administration guide, configuring, namespace, network policy, network policies, multitenant isolation
 :navtitle: Configuring network policies
@@ -14,8 +14,6 @@ For security, multitenant isolation can be configured by using NetworkPolicy obj
 However for {prod-short}, it is necessary for Pods in the {prod-short} {orch-namespace} to be able to communicate with Pods in {orch-namespace}s. 
 
 For a {prod-short} installation with network restrictions such as multitenant isolation configured, the `allow-from-eclipse-che.yaml` NetworkPolicy must be applied to each user {orch-namespace}.
-
-The `allow-from-eclipse-che` NetworkPolicy allows incoming traffic from the {prod-short} namespace to all Pods in the user {orch-namespace}.
 
 .`allow-from-eclipse-che.yaml`
 ====
@@ -38,3 +36,25 @@ spec:
 ====
 <1> The {prod-short} namespace. The default is `{prod-namespace}`.
 <2> The empty podSelector selects all Pods in the {orch-namespace}.
+
+== Applying the NetworkPolicy on a user namespace
+
+.Prerequisites
+
+* An active `{orch-cli}` session with administrative permissions to the destination {orch-name} cluster. See {orch-cli-link}.
+* A user namespace to apply the NetworkPolicy to. See xref:configuring-namespace-provisioning.adoc[] for more information about user namespaces. 
+
+.Procedure
+
+. Run the following command to apply the NetworkPolicy on a user namespace.
++
+[subs="+attributes,+quotes"]
+----
+$ {orch-cli} apply -f `allow-from-eclipse-che.yaml` -n __<user namespace>__
+----
+
+.Additional resources
+
+* link:https://kubernetes.io/docs/concepts/security/multi-tenancy/#network-isolation[Network isolation]
+
+* link:https://docs.openshift.com/container-platform/{ocp4-ver}/networking/network_policy/multitenant-network-policy.html[Configuring multitenant isolation with network policy]

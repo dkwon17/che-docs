@@ -34,7 +34,7 @@ spec:
 ----
 <1> A comma-separated list of labels that the target ingress controller uses to filter the set of Routes to service.
 <2> The DNS name serviced by the target ingress controller.
-<3> An unstructured key value map stored with a resource.```
+<3> An unstructured key value map stored with a resource.
 
 
 .Additional resources
