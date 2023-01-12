@@ -7,32 +7,41 @@
 [id="url-parameter-for-configuring-project-remotes"]
 = URL parameter for configuring project remotes
 
-When you open a URL to start a new workspace, the origin remote will be configured automatically. Additional Git remotes can be configured on the command line after workspace startup, or by editing the {devworkspace} {orch-name} resource for the new workspace after its creation. 
+When you open a URL to start a new workspace, the origin remote will be configured automatically.
 
-To have {prod-short} automatically configure Git remotes on workspace creation, the `remotes=<remotes>` URL parameter can be used.
+For example, when creating a workspace using the following URL:
+[source,subs="+quotes,+attributes,+macros"]
+----
+pass:c,a,q[{prod-url}]#https://github.com/eclipse-che/che-docs
+----
 
-The first remote specified in the `remotes` parameter will have its default branch checked out on workspace startup.
+the `origin` remote is automatically configured with the remote URL being `https://github.com/eclipse-che/che-docs.git`.
+
+Additional Git remotes can be added using the command line after workspace startup, or by editing the {devworkspace} {orch-name} resource for the new workspace after its creation. 
+
+To have {prod-short} automatically add Git remotes on workspace creation, the `remotes=<remotes>` URL parameter can be used.
 
 The value of the `remotes` parameter can be provided in two formats: by providing both remote names and URLs, or by providing only URLs.
 
 == Providing remote names and URLs
 
-Remote names and URLs can be specified by providing a list of `{name,URL}` pairs in the following format:
+Remotes can be added to the workspace by providing a list of `{name,URL}` pairs in the following format:
 
-[source,subs="+quotes,+attributes,+macros"]
-----
-{{origin,https://git-url/origin/project.git},{upstream,https://git-url/upstream/project.git}, ... } <1>
-----
-
-The following example configures two remotes on workspace creation, `origin` and `upstream`. The `origin` remote's default branch is checked out on workspace startup.
+The following example adds two remotes on workspace creation, a new `origin` remote and an `upstream` remote. The new `origin` remote replaces the original `origin` remote configured by {prod-short}.
 [source,subs="+quotes,+attributes,+macros"]
 ----
 pass:c,a,q[{prod-url}]#__<git_repository_url>__?remotes={{origin,https://git-url/origin/project.git},{upstream,https://git-url/upstream/project.git}}
 ----
 
+The following example adds a remote named `upstream`. The `origin` remote that is initially configured by {prod-short} remains unchanged.
+[source,subs="+quotes,+attributes,+macros"]
+----
+pass:c,a,q[{prod-url}]#__<git_repository_url>__?remotes={{upstream,https://git-url/upstream/project.git}}
+----
+
 == Providing only URLs
 
-Remote URLs can be specified by providing a list of URLs in the following format:
+Remotes can be added by providing a list of URLs in the following format:
 
 [source,subs="+quotes,+attributes,+macros"]
 ----
@@ -42,7 +51,7 @@ Remote URLs can be specified by providing a list of URLs in the following format
 When remotes are configured in this format, the remote names are implicit. 
 The first remote is `origin`, the second remote is `upstream`, and subsequent remotes are `fork1`, `fork2`, ... ,  `fork(n-2)`.
 
-The following example configures three remotes on workspace creation, `origin`, `upstream`, and `fork1`. The `origin` remote's default branch is checked out on workspace startup.
+The following example adds three remotes on workspace creation, a new `origin` remote, an `upstream` remote, and a `fork1` remote. The new `origin` remote replaces the original `origin` remote configured by {prod-short}.
 [source,subs="+quotes,+attributes,+macros"]
 ----
 pass:c,a,q[{prod-url}]#__<git_repository_url>__?remotes={https://git-url/origin/project.git,https://git-url/upstream/project.git,https://git-url/user/project.git} <1>
