@@ -1,16 +1,13 @@
 :_content-type: PROCEDURE
-:description: Installing Prometheus and Grafana
+:description: Configuring Prometheus and Grafana using templates
 :keywords: prometheus, grafana
-:navtitle: Installing Prometheus and Grafana
-:page-aliases:
+:navtitle: Configuring using templates
+:page-aliases: configuring-prometheus-and-grafana-using-templates.adoc
 
+[id="configuring-prometheus-and-grafana-using-templates"]
+= Configuring Prometheus and Grafana using templates
 
-[id="installing-prometheus-and-grafana"]
-= Installing Prometheus and Grafana
-
-You can install Prometheus and Grafana by applying `template.yaml`. The `template.yaml` file in this example provides a monitoring stack of basic configuration, Deployments and Services to get started with Prometheus and Grafana.
-
-Alternatively, you can use the link:https://github.com/prometheus-operator/prometheus-operator[Prometheus Operator] and link:https://github.com/grafana-operator/grafana-operator[Grafana Operator].
+The `template.yaml` file in this example provides an monitoring stack of basic configuration, Deployments and Services to get started with Prometheus and Grafana.
 
 .Prerequisites
 
@@ -103,7 +100,7 @@ spec:
       labels:
         app: prometheus
     spec:
-      serviceAccountName: prometheus
+      serviceAccountName: prometheus-k8s
       containers:
       - image: quay.io/prometheus/prometheus:v2.36.0
         name: prometheus
@@ -134,10 +131,28 @@ data:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: prometheus
+  name: prometheus-k8s
 ---
 ----
 ====
+
+The template above uses a ServiceAccount named `prometheus-k8s`. 
+
+== Collecting {devworkspace} Operator metrics
+
+include::partial$proc_collecting-dev-workspace-operator-metrics-with-prometheus.adoc[]
+include::partial$proc_viewing-dev-workspace-operator-metrics-on-grafana-dashboards.adoc[]
+
+== Collecting {prod-short} Operator metrics
+
+:leveloffset: +1
+
+include::partial$proc_enabling-and-exposing-che-metrics.adoc[]
+include::partial$proc_collecting-che-metrics-with-prometheus.adoc[]
+
+:leveloffset: -1
+
+== Importing the example dashboard
 
 .Additional resources
 * link:https://prometheus.io/docs/introduction/first_steps/[First steps with Prometheus]

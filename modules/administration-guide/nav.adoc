@@ -51,7 +51,7 @@
 *** xref:configuring-server-logging.adoc[]
 *** xref:collecting-logs-using-chectl.adoc[]
 *** xref:monitoring-with-prometheus-and-grafana.adoc[]
-**** xref:installing-prometheus-and-grafana.adoc[]
+**** xref:configuring-prometheus-and-grafana-using-templates.adoc[]
 **** xref:monitoring-the-dev-workspace-operator.adoc[]
 **** xref:monitoring-che.adoc[]
 ** xref:configuring-networking.adoc[]

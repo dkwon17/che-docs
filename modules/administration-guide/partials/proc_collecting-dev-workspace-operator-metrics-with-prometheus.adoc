@@ -6,17 +6,11 @@ To use Prometheus to collect, store, and query metrics about the {devworkspace} 
 
 .Prerequisites
 
-* The `devworkspace-controller-metrics` Service is exposing metrics on port `8443`. This is preconfigured by default.
-
-* The `devworkspace-webhookserver` Service is exposing metrics on port `9443`. This is preconfigured by default.
-
 * Prometheus 2.26.0 or later is running. The Prometheus console is running on port `9090` with a corresponding Service. See link:https://prometheus.io/docs/introduction/first_steps/[First steps with Prometheus].
 
 .Procedure
 
-. Create a ClusterRoleBinding to bind the ServiceAccount associated with Prometheus to the link:https://github.com/devfile/devworkspace-operator/blob/main/deploy/deployment/kubernetes/objects/devworkspace-controller-metrics-reader.ClusterRole.yaml[devworkspace-controller-metrics-reader] ClusterRole. For the xref:installing-prometheus-and-grafana.adoc[example monitoring stack], the name of the ServiceAccount to be be used is `prometheus`.
-+
-NOTE: Without the ClusterRoleBinding, you cannot access {devworkspace} metrics because access is protected with role-based access control (RBAC).
+. Create a ClusterRoleBinding to bind the `prometheus-k8s` ServiceAccount to the link:https://github.com/devfile/devworkspace-operator/blob/main/deploy/deployment/kubernetes/objects/devworkspace-controller-metrics-reader.ClusterRole.yaml[devworkspace-controller-metrics-reader] ClusterRole. For the xref:configuring-prometheus-and-grafana-using-templates.adoc[example monitoring stack], the name of the ServiceAccount to be be used is `prometheus`.
 +
 .ClusterRoleBinding
 ====
@@ -28,7 +22,7 @@ metadata:
   name: devworkspace-controller-metrics-binding
 subjects:
   - kind: ServiceAccount
-    name: prometheus
+    name: prometheus-k8s
     namespace: monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -39,7 +33,7 @@ roleRef:
 
 . Configure Prometheus to scrape metrics from port `8443` exposed by the `devworkspace-controller-metrics` Service and from port `9443` exposed by the `devworkspace-webhookserver` Service.
 +
-NOTE: The xref:installing-prometheus-and-grafana.adoc[example monitoring stack] already creates the `prometheus-config` ConfigMap with an empty configuration. To provide the Prometheus configuration details, edit the `data` field of the ConfigMap.
+NOTE: The xref:configuring-prometheus-and-grafana-using-templates.adoc[example monitoring stack] already creates the `prometheus-config` ConfigMap with an empty configuration. To provide the Prometheus configuration details, edit the `data` field of the ConfigMap.
 +
 .Prometheus configuration
 ====

@@ -8,8 +8,10 @@
 [id="monitoring-with-prometheus-and-grafana"]
 = Monitoring {prod-short} with Prometheus and Grafana
 
-You can collect and view the {prod-short} metrics with a running instance of Prometheus and Grafana on the cluster.
+The {prod-short} Operator and {devworkspace} Operator exposes metrics which can be scraped and displayed using Grafana dashboards.
+This section presents two ways to set up the monitoring stack on the cluster.
 
-* xref:installing-prometheus-and-grafana.adoc[]
+* xref:configuring-prometheus-and-grafana-using-templates.adoc[]
 * xref:monitoring-the-dev-workspace-operator.adoc[]
 * xref:monitoring-che.adoc[]
+* xref_grafana-dashboards-for-the-dev-workspace-operator.adoc[]
