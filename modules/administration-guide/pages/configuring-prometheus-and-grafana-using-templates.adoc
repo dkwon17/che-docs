@@ -1,0 +1,33 @@
+:_content-type: PROCEDURE
+:description: Configuring Prometheus and Grafana using templates
+:keywords: prometheus, grafana
+:navtitle: Configuring using templates
+:page-aliases:
+
+[id="configuring-prometheus-and-grafana-using-templates"]
+= Configuring Prometheus and Grafana using templates
+
+The `template.yaml` file in this example provides an monitoring stack of basic configuration, Deployments and Services to get started with Prometheus and Grafana.
+
+.Prerequisites
+
+* {orch-cli}
+// Procedure modules explain how to do something.
+// A procedure module contains numbered, step-by-step instructions to help the user accomplish a single task.
+// Sometimes those tasks include substeps.
+// Procedure modules must include a title, a brief introduction, and one or more steps in the form of imperative statements.
+// Procedure modules can also contain prerequisites, verification steps, and additional resources or next steps.
+
+.Prerequisites
+* Write prerequisites unordered list
+
+.Procedure
+. Write procedure steps.
+. Steps are an ordered list.
+
+.Verification steps
+. Write verification steps
+. Steps are an ordered list.
+
+.Additional resources
+* Write additional resources unordered list
