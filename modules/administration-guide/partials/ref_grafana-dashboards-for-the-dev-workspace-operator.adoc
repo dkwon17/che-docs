@@ -1,7 +1,9 @@
 [id="ref_grafana-dashboards-for-the-dev-workspace-operator"]
-= Grafana dashboard for the {devworkspace} Operator
+= Dashboard for the {devworkspace} Operator
 
-The example Grafana dashboard link:https://github.com/devfile/devworkspace-operator/blob/main/docs/grafana/grafana-dashboard.json[based on `grafana-dashboard.json`] displays the following metrics from the {devworkspace} Operator.
+The OpenShift web console custom dashboard is based on Grafana 6.x and displays the following metrics from the {devworkspace} Operator.
+
+Not all features for Grafana 6.x dashboards are supported as an OpenShift web console dashboard.
 
 == The *{devworkspace}-specific metrics* panel
 
