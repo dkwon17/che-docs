@@ -27,9 +27,6 @@ $ kubectl label configmap grafana-dashboard-devspaces-server console.openshift.i
 
 . Select the `Dev Workspace Operator` dashboard under the `Dashboard` dropdown menu and verify that the dashboard panels contain data.
 +
-.{prod-short} server JVM dashboard
-image::monitoring/monitoring-che-che-server-jvm-dashboard.png[The *{prod-short} server JVM* dashboard, link="{imagesdir}/monitoring/monitoring-che-che-server-jvm-dashboard.png"]
-+
 .Quick Facts
 image::monitoring/monitoring-che-che-server-jvm-dashboard-quick-facts.png[The *JVM quick facts* panel, link="{imagesdir}/monitoring/monitoring-che-che-server-jvm-dashboard-quick-facts.png"]
 +
