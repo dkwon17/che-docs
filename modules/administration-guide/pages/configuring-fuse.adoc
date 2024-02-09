@@ -1,0 +1,88 @@
+:_content-type: ASSEMBLY
+:description: Configuring FUSE
+:keywords: administration-guide, configuring, fuse
+:navtitle: Configuring FUSE
+:page-aliases:
+
+[id="configuring-FUSE"]
+= Configuring FUSE
+
+By default, the Universal Developer Image (UDI) contains Podman which can be used to build and push container images within a workspace.
+However, the storage driver used by Podman by default is `vfs` which does not provide copy-on-write support.
+For faster image builds, it is recommended to use the FUSE overlay storage driver. This page describes how this storage driver can be enabled for workspaces for {prod} running on OpenShift.
+
+This section describes how to enable FUSE overlay for Podman on a new workspace running UDI. Existing workspaces can be edited to use the FUSE overlay for Podman as well.
+
+== Using FUSE overlay for OpenShift version < 4.15
+
+[WARNING]
+====
+Creating `MachineConfig` resources on an OpenShift cluster is a potentially dangerous task, as it allows making advanced, system-level changes to the cluster.
+
+View the link:https://docs.openshift.com/container-platform/4.14/post_installation_configuration/machine-configuration-tasks.html#machine-config-overview-post-install-machine-configuration-tasks[MachineConfig documentation] for more details and possible risks.
+
+====
+
+.Prerequisites
+
+* The link:https://docs.openshift.com/container-platform/4.14/installing/install_config/installing-customizing.html#installation-special-config-butane-install_installing-customizing[Butane] tool (`butane`) is installed in the operating system you are using.
+
+* An active `{orch-cli}` session with administrative permissions to the destination {orch-name} cluster. See {orch-cli-link}.
+
+.Procedure
+
+. Set an environment variable depending on whether your OpenShift cluster is a single node cluster, or a multi node cluster with a separate control plane node and worker nodes.
++
+For a single node cluster, set:
+[subs="+quotes,+attributes,+macros"]
+----
+$ NODE_ROLE=master
+----
++
+For a multi node cluster, set:
+[subs="+quotes,+attributes,+macros"]
+----
+$ NODE_ROLE=worker
+----
+
+. Apply a `MachineConfig` that creates a drop-in CRI-O configuration file anmed `99-podman-fuse` in the `NODE_ROLE` nodes' filesystem. This configuration file allows pods to mount the `/dev/fuse` device, which is required to use the FUSE overlay.
++
+[subs="+quotes,+attributes,+macros"]
+----
+cat << EOF | butane | oc apply -f -
+variant: openshift
+version: 4.12.0
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: ${NODE_ROLE}
+  name: podman-dev-fuse-${NODE_ROLE}
+storage:
+  files:
+  - path: /etc/crio/crio.conf.d/99-podman-fuse <1>
+    mode: 0644
+    overwrite: true
+    contents: <2>
+      inline: |
+        [crio.runtime.workloads.podman-fuse] <3>
+        activation_annotation = "io.openshift.podman-fuse" <4>
+        allowed_annotations = [
+          "io.kubernetes.cri-o.Devices" <5>
+        ]
+        [crio.runtime]
+        allowed_devices=["/dev/fuse"] <6>
+EOF
+----
+<1> The absolute file path to the new drop-in configuration file for CRI-O.
+<2> The content of the new configuration file.
+<3> Define a `podman-fuse` workload.
+<4> The pod annotation that activates these the `podman-fuse` workload settings.
+<5> List of annotations the `podman-fuse` workload is allowed to process.
+<6> List of devices on the host that a user can specify with the `io.kubernetes.cri-o.Devices` annotation.
+
+After applying this MachineConfig,
+
+. Create a new DevWorkspace resource that contains the necessary annotations for mounting `/dev/fuse` to the workspace pod.
+
+== Using FUSE overlay for OpenShift version >= 4.15
+
+
