@@ -13,7 +13,7 @@ For faster image builds, it is recommended to use the FUSE overlay storage drive
 
 This section describes how to enable FUSE overlay for Podman on a new workspace running UDI. Existing workspaces can be edited to use the FUSE overlay for Podman as well.
 
-== Using FUSE overlay for OpenShift version < 4.15
+== Enabling container access to /dev/fuse for OpenShift version < 4.15
 
 [WARNING]
 ====
@@ -55,7 +55,7 @@ version: 4.12.0
 metadata:
   labels:
     machineconfiguration.openshift.io/role: ${NODE_ROLE}
-  name: podman-dev-fuse-${NODE_ROLE}
+  name: 99-podman-dev-fuse-${NODE_ROLE}
 storage:
   files:
   - path: /etc/crio/crio.conf.d/99-podman-fuse <1>
@@ -69,7 +69,7 @@ storage:
           "io.kubernetes.cri-o.Devices" <5>
         ]
         [crio.runtime]
-        allowed_devices=["/dev/fuse"] <6>
+        allowed_devices = ["/dev/fuse"] <6>
 EOF
 ----
 <1> The absolute file path to the new drop-in configuration file for CRI-O.
@@ -79,10 +79,41 @@ EOF
 <5> List of annotations the `podman-fuse` workload is allowed to process.
 <6> List of devices on the host that a user can specify with the `io.kubernetes.cri-o.Devices` annotation.
 
-After applying this MachineConfig,
+After applying this MachineConfig, pods with the following annotations will have the `/dev/fuse` mounted to the pod containers.
+[source,yaml,subs="+quotes,+attributes"]
+----
+io.openshift.podman-fuse: ''
+io.kubernetes.cri-o.Devices: /dev/fuse
+----
 
-. Create a new DevWorkspace resource that contains the necessary annotations for mounting `/dev/fuse` to the workspace pod.
+.Verification steps
 
-== Using FUSE overlay for OpenShift version >= 4.15
+. Get the name of a worker node:
++
+[subs="+attributes,+quotes"]
+----
+$ oc get nodes
+----
 
+. Open an `oc debug` session to a worker node and verify that a new CRI-O config file named `99-podman-fuse` exists.
++
+[subs="+attributes,+quotes"]
+----
+$ oc debug node/__<nodename>__
+----
 
++
+[subs="+attributes,+quotes"]
+----
+sh-4.4# ls -l /host/etc/crio/crio.conf.d/ | grep 99-podman-fuse
+----
+
+. Verify the output:
++
+[subs="+attributes,+quotes"]
+----
+-rw-r--r--. 1 root root  193 Feb  9 21:57 99-podman-fuse
+----
+
+== Using FUSE overlay for Podman within a workspace
+Users can follow LINK to create or update existing workspaces to use the FUSE overlay storage driver for Podman.
