@@ -9,9 +9,9 @@
 
 By default, the Universal Developer Image (UDI) contains Podman which can be used to build and push container images within a workspace.
 However, the storage driver used by Podman by default is `vfs` which does not provide copy-on-write support.
-For faster image builds, it is recommended to use the FUSE overlay storage driver. This page describes how this storage driver can be enabled for workspaces for {prod} running on OpenShift.
+For faster image builds, it is recommended to use the FUSE overlay storage driver.
 
-This section describes how to enable FUSE overlay for Podman on a new workspace running UDI. Existing workspaces can be edited to use the FUSE overlay for Podman as well.
+This page describes how to allow workspace containers access to the `/dev/fuse` device, which is a requirement for using the FUSE overlay within Podman.
 
 == Enabling container access to /dev/fuse for OpenShift version < 4.15
 
@@ -38,14 +38,13 @@ For a single node cluster, set:
 ----
 $ NODE_ROLE=master
 ----
-+
 For a multi node cluster, set:
 [subs="+quotes,+attributes,+macros"]
 ----
 $ NODE_ROLE=worker
 ----
 
-. Apply a `MachineConfig` that creates a drop-in CRI-O configuration file anmed `99-podman-fuse` in the `NODE_ROLE` nodes' filesystem. This configuration file allows pods to mount the `/dev/fuse` device, which is required to use the FUSE overlay.
+. Create a `MachineConfig` resource that creates a drop-in CRI-O configuration file anmed `99-podman-fuse` in the `NODE_ROLE` nodes' filesystem. This configuration file allows pods to mount the `/dev/fuse` device, which is required to use the FUSE overlay.
 +
 [subs="+quotes,+attributes,+macros"]
 ----
@@ -79,7 +78,26 @@ EOF
 <5> List of annotations the `podman-fuse` workload is allowed to process.
 <6> List of devices on the host that a user can specify with the `io.kubernetes.cri-o.Devices` annotation.
 
-After applying this MachineConfig, pods with the following annotations will have the `/dev/fuse` mounted to the pod containers.
+. After applying `MachineConfig` resource, scheduling will be temporarily disabled for each worker node as changes are applied. View the worker nodes' statuses.
++
+For a multi node cluster, set:
+[subs="+quotes,+attributes,+macros"]
+----
+$ oc get nodes
+----
+Example output:
+[subs="+quotes,+attributes,+macros"]
+----
+NAME                           STATUS                     ROLES    AGE   VERSION
+ip-10-0-136-161.ec2.internal   Ready                      worker   28m   v1.27.9
+ip-10-0-136-243.ec2.internal   Ready                      master   34m   v1.27.9
+ip-10-0-141-105.ec2.internal   Ready,SchedulingDisabled   worker   28m   v1.27.9
+ip-10-0-142-249.ec2.internal   Ready                      master   34m   v1.27.9
+ip-10-0-153-11.ec2.internal    Ready                      worker   28m   v1.27.9
+ip-10-0-153-150.ec2.internal   Ready                      master   34m   v1.27.9
+----
+
+. Once all worker nodes' statuses are `Ready`, any pod with the following annotations will have the `/dev/fuse` mounted to the pod containers.
 [source,yaml,subs="+quotes,+attributes"]
 ----
 io.openshift.podman-fuse: ''
@@ -108,7 +126,7 @@ $ oc debug node/__<nodename>__
 sh-4.4# ls -l /host/etc/crio/crio.conf.d/ | grep 99-podman-fuse
 ----
 
-. Verify the output:
+. Verify the output.
 +
 [subs="+attributes,+quotes"]
 ----
@@ -116,4 +134,4 @@ sh-4.4# ls -l /host/etc/crio/crio.conf.d/ | grep 99-podman-fuse
 ----
 
 == Using FUSE overlay for Podman within a workspace
-Users can follow LINK to create or update existing workspaces to use the FUSE overlay storage driver for Podman.
+Users can follow xref:end-user-guide:using-the-fuse-overlay-storage-driver.adoc[Configuring FUSE] to create or update existing workspaces to use the FUSE overlay storage driver for Podman.

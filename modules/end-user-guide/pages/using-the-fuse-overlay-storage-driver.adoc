@@ -14,11 +14,32 @@ Podman is included in the UDI, allowing developers to build and push container i
 
 By default, the Podman in the UDI is configured to use the `vfs` storage driver. Since the `vfs` storage driver does not support copy-on-write, changing the storage driver to `overlay` can improve image build times.
 
-This document describes how to change the storage driver to `overlay` for Podman running in workspaces with UDI.
+The configuration file that defines the storage driver is the `/home/user/.config/containers/storage.conf` file located in the UDI container.
+
+.`storage.conf`
+[source]
+----
+[storage]
+driver = "vfs"
+----
+
+Using the FUSE overlay storage driver involves replacing the content of `storage.conf` to the following:
+
+.`storage.conf`
+[source]
+----
+[storage]
+driver = "overlay"
+
+[storage.options.overlay]
+mount_program="/usr/bin/fuse-overlayfs"
+----
+
+This can be done manually after starting a workspace. However, this document describes how to change the storage driver to `overlay` for workspaces running UDI on workspace startup.
 
 .Prerequisites
 
-* The administrator has enabled container access to /dev/fuse by following xref:administration-guide:configuration-fuse.adoc[Administration Guide:Configuring FUSE]
+* The administrator has enabled container access to /dev/fuse by following xref:administration-guide:configuring-fuse.adoc[Configuring FUSE]
 
 * An active `{orch-cli}` session with administrative permissions to the destination {orch-name} cluster. See {orch-cli-link}.
 
