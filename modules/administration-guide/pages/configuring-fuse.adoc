@@ -13,7 +13,7 @@ For faster image builds, it is recommended to use the FUSE overlay storage drive
 
 This page describes how to allow workspace containers access to the `/dev/fuse` device, which is a requirement for using the FUSE overlay within Podman.
 
-== Enabling container access to /dev/fuse for OpenShift version < 4.15
+== Enabling container access to /dev/fuse for OpenShift version
 
 [WARNING]
 ====
@@ -113,24 +113,18 @@ io.kubernetes.cri-o.Devices: /dev/fuse
 $ oc get nodes
 ----
 
-. Open an `oc debug` session to a worker node and verify that a new CRI-O config file named `99-podman-fuse` exists.
+. Open an `oc debug` session to a worker node.
 +
 [subs="+attributes,+quotes"]
 ----
 $ oc debug node/__<nodename>__
 ----
 
+. Verify that a new CRI-O config file named `99-podman-fuse` exists.
 +
 [subs="+attributes,+quotes"]
 ----
-sh-4.4# ls -l /host/etc/crio/crio.conf.d/ | grep 99-podman-fuse
-----
-
-. Verify the output.
-+
-[subs="+attributes,+quotes"]
-----
--rw-r--r--. 1 root root  193 Feb  9 21:57 99-podman-fuse
+sh-4.4# stat /host/etc/crio/crio.conf.d/99-podman-fuse
 ----
 
 == Using FUSE overlay for Podman within a workspace
