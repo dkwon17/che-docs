@@ -393,7 +393,7 @@ Set the telemetry plugin as a default plugin. Default plugins are applied on {de
 spec:
   devEnvironments:
     defaultPlugins:
-    - editor: eclipse/che-theia/next     <1>
+    - editor: che-incubator/che-code/insiders     <1>
       plugins:                           <2>
       - 'http://apache-che.apps-crc.testing/plugin.yaml'
 ----
