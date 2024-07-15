@@ -50,7 +50,7 @@ kind: CheCluster
 apiVersion: org.eclipse.che/v2
 spec:
   devEnvironments:
-    workspacePodAnnotations:
+    workspacesPodAnnotations:
       io.kubernetes.cri-o.Devices: /dev/fuse
 ----
 ====
