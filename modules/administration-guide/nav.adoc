@@ -102,6 +102,8 @@
 ** xref:configuring-fuse.adoc[]
 *** xref:enabling-access-to-dev-fuse-for-openshift.adoc[]
 *** xref:enabling-fuse-for-all-workspaces.adoc[]
+**** xref:enabling-fuse-for-podman-4.adoc[]
+**** xref:enabling-fuse-for-podman-5.adoc[]
 * xref:managing-ide-extensions.adoc[]
 ** xref:extensions-for-microsoft-visual-studio-code-open-source.adoc[]
 ** xref:configuring-the-open-vsx-registry-url.adoc[]
