@@ -8,3 +8,6 @@ This repository contains sources for the [documentation for Eclipse Che](https:/
 To ask a question, [file an issue](https://github.com/eclipse/che/issues/new?labels=area/doc,kind/question).
 
 To learn more about the Eclipse Che project, see the [Eclipse Che repository on GitHub](https://github.com/eclipse/che).
+asdfsadfsa
+df
+asdf
