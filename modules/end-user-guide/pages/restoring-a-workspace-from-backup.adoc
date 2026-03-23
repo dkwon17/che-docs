@@ -1,0 +1,64 @@
+:_content-type: CONCEPT
+:description: Restoring a Che workspace from a DevWorkspace backup
+:keywords: workspace, backup, restore, devworkspace, dashboard
+:navtitle: Restoring a workspace from backup
+:page-aliases:
+
+[id="restoring-a-workspace-from-backup"]
+= Restoring a workspace from backup
+
+When backup is enabled for {devworkspace} instances on your cluster, workspace data can be captured when a workspace stops.
+You can then start a new workspace from an existing backup by using the {prod-short} dashboard.
+
+[NOTE]
+====
+Backup storage, registry access, and schedules are configured cluster-wide by administrators in the {devworkspace} Operator.
+For administrator steps, see xref:administration-guide:devworkspace-backup.adoc[].
+====
+
+== How backup and restore work
+
+After an administrator enables backup, stopping a workspace can trigger a backup of its data to an OCI-compatible registry.
+Backups are stored as OCI images.
+*Internal* backups are those the dashboard already lists for your user account.
+On {ocp}, they might be represented as `ImageStream` resources in your namespace.
+
+From the dashboard you can:
+
+* Open the list of backups and inspect backup status.
+* Restore a workspace from a backup that is already available to you (*internal* backup), or from an image reference you provide (*external* backup).
+* Choose compute limits and the editor for the new workspace before you start the restore.
+
+When the restored workspace is ready, the dashboard opens it in a new browser tab.
+
+[NOTE]
+====
+A restored workspace is created from a minimal devfile so your files and tools come back from the backup archive.
+The *Devfile* tab in the workspace might not show the original devfile from a Git repository, because that metadata is not recovered when the previous {devworkspace} is gone.
+====
+
+== Viewing backups in the dashboard
+
+. In the left sidebar, open *Workspace*.
+. Select the *Backups* tab to see backups you can use.
+
+.The *Backups* tab in the *Workspace* view
+image::workspace-backup/backups_tab.png[Backups tab in the Workspace view of the dashboard,link="{imagesdir}/workspace-backup/backups_tab.png"]
+
+== Starting a restore
+
+On the restore page, choose whether to use an internal backup (one already available as an image for your user) or an external backup by providing your own backup image reference.
+
+.Restore mode and backup source
+image::workspace-backup/restore_section_1.png[Choosing internal or external backup when restoring a workspace,link="{imagesdir}/workspace-backup/restore_section_1.png"]
+
+Set a name for the new workspace, optional memory and CPU limits, and the editor to use.
+Then start the restore and wait until the workspace is running.
+
+.Resource limits and editor for a restored workspace
+image::workspace-backup/restore_section_2.png[Memory limit CPU limit and editor selection when restoring from backup,link="{imagesdir}/workspace-backup/restore_section_2.png"]
+
+.Additional resources
+
+* link:https://github.com/eclipse-che/che-dashboard/pull/1471[che-dashboard pull request #1471: Backup and restore DevWorkspaces]
+* link:https://github.com/eclipse-che/che-dashboard/pull/1478[che-dashboard pull request #1478: Resource limits and related restore UI improvements]
